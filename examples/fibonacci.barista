@@ -1,0 +1,10 @@
+item fibonacci(pump x) {
+    brew (x < 1) {
+        serve x
+    }
+    pull {
+        serve (fibonacci(n - 1) + fibonacci(n - 2))
+    }
+}
+
+orderUp("creates an item for fibonacci and serves using recursion")

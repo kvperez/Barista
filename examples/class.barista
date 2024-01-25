@@ -1,0 +1,12 @@
+order Main {
+    hopper (pump x, long y) {
+        pump shot.x = x
+        long shot.y = y
+    }
+
+    item changeMaker(pump x) {
+        serve shot.x
+    }
+}
+
+orderUp("creates a class, with a hopper (constructor)")
