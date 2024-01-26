@@ -45,7 +45,6 @@ order Main {
     serve shot.x
   }
 }
-
 ```
 
 </td>
@@ -79,7 +78,6 @@ item returnNegativeOne(pump x) {
     serve -1
   }
 }
-
 ```
 
 </td>
@@ -106,11 +104,10 @@ function returnNegativeOne(x) {
 ```
 item whileBreak() {
   blend (true) {
-      orderUp("WHILE STATEMENT")
-      tamp
+    orderUp("WHILE STATEMENT")
+    tamp
   }
 }
-
 ```
 
 </td>
