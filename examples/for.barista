@@ -1,5 +1,5 @@
-item main(pump x) {
-    ristretto espresso y in x {
+item returnNegativeOne(pump x) {
+    ristretto pump y espresso x {
         serve -1
     }
 }

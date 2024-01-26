@@ -36,14 +36,14 @@ console.log(“Hello World!”)
 
 ```
 order Main {
-    hopper (pump x, long y) {
-        pump shot.x = x
-        long shot.y = y
-    }
+  hopper (pump x, long y) {
+    pump shot.x = x
+    long shot.y = y
+  }
 
-    item changeMaker(pump x) {
-        serve shot.x
-    }
+  item changeMaker(pump x) {
+    serve shot.x
+  }
 }
 
 ```
@@ -59,6 +59,68 @@ class Main {
   }
   changeMaker() {
     return this.x
+  }
+}
+```
+
+</td>
+</table>
+
+### For Loop
+
+<table>
+<tr> <th>Barista</th><th>JavaScript</th><tr>
+</tr>
+<td>
+
+```
+item returnNegativeOne(pump x) {
+  ristretto pump y espresso x {
+    serve -1
+  }
+}
+
+```
+
+</td>
+<td>
+
+```javascript
+function returnNegativeOne(x) {
+  for (let i = 0; i < x; i++) {
+    return -1
+  }
+}
+```
+
+</td>
+</table>
+
+### While
+
+<table>
+<tr> <th>Barista</th><th>JavaScript</th><tr>
+</tr>
+<td>
+
+```
+item whileBreak() {
+  blend (true) {
+      orderUp("WHILE STATEMENT")
+      tamp
+  }
+}
+
+```
+
+</td>
+<td>
+
+```javascript
+function whileBreak(x) {
+  while (true) {
+    console.log("WHILE STATEMENT")
+    break
   }
 }
 ```

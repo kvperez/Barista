@@ -1,5 +1,5 @@
 item fibonacci(pump x) {
-    brew (x < 1) {
+    brew (x <= 1) {
         serve x
     }
     pull {
