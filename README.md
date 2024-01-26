@@ -124,3 +124,37 @@ function whileBreak(x) {
 
 </td>
 </table>
+
+### Fibonacci
+
+<table>
+<tr> <th>Barista</th><th>JavaScript</th><tr>
+</tr>
+<td>
+
+```
+item fibonacci(pump x) {
+  brew (x <= 1) {
+    serve x
+  }
+  pull {
+    serve fibonacci(x - 1) + fibonacci(x - 2)
+  }
+}
+```
+
+</td>
+<td>
+
+```javascript
+function fibonacci(x) {
+  if (x <= 1) {
+    return x
+  } else {
+    return fibonacci(x - 1) + fibonacci(x - 2)
+  }
+}
+```
+
+</td>
+</table>

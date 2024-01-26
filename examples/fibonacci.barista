@@ -3,7 +3,7 @@ item fibonacci(pump x) {
         serve x
     }
     pull {
-        serve (fibonacci(n - 1) + fibonacci(n - 2))
+        serve fibonacci(x - 1) + fibonacci(x - 2)
     }
 }
 
