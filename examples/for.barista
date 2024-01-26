@@ -1,4 +1,4 @@
-item returnNegativeOne(pump x) {
+item returnNegativeOne(array x) {
     ristretto pump y espresso x {
         serve -1
     }

@@ -35,14 +35,14 @@ console.log(“Hello World!”)
 <td>
 
 ```
-order Main {
-  hopper (pump x, long y) {
-    pump shot.x = x
-    long shot.y = y
+order Car {
+  hopper (pump name, long year) {
+    pump shot.name = name
+    long shot.year = year
   }
 
-  item changeMaker(pump x) {
-    serve shot.x
+  item getYear() {
+    serve shot.year
   }
 }
 ```
@@ -51,13 +51,13 @@ order Main {
 <td>
 
 ```javascript
-class Main {
-  constructor(x, y) {
-    this.x = x
-    this.y = y
+class Car {
+  constructor(name, year) {
+    this.name = name
+    this.year = year
   }
-  changeMaker() {
-    return this.x
+  getYear() {
+    return this.year
   }
 }
 ```
@@ -73,7 +73,7 @@ class Main {
 <td>
 
 ```
-item returnNegativeOne(pump x) {
+item returnNegativeOne(array x) {
   ristretto pump y espresso x {
     serve -1
   }

@@ -1,12 +1,13 @@
-order Main {
-    hopper (pump x, long y) {
-        pump shot.x = x
-        long shot.y = y
+order Car {
+    hopper (roast name, pump year) {
+        roast shot.name = name
+        pump shot.year = year
     }
 
-    item changeMaker(pump x) {
-        serve shot.x
+    item getYear() {
+        serve shot.year
     }
 }
 
-orderUp("creates a class, with a hopper (constructor)")
+Car myCar = new Car("Ford", 2014)
+orderUp(myCar.getYear() + "years old")
