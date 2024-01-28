@@ -2,7 +2,15 @@
 
 # Barista
 
-A compiler for Starbucks Partners
+A programming language inspired by common terminology I use as a Starbucks Partner. This programming language allows Baristas to explore further than the Pike Place Roast, while maintaining focus on commonly used terms known to coffee brewers. With expertise in this language, Baristas will get an embroidered logo on their Apron or Coffee Master Apron. Baristas will be allowed to continue their _customer connections_ on the web.
+
+## Features
+
+- Barista Terminology
+- Statitc Typing
+- Uses JavaScript and some Python
+- Classes
+- Loops
 
 ## Examples
 
@@ -14,7 +22,7 @@ A compiler for Starbucks Partners
 <td>
 
 ```
-serve(“Hello World!”)
+remake(“Hello World!”)
 ```
 
 </td>
@@ -36,12 +44,12 @@ console.log(“Hello World!”)
 
 ```
 order Car {
-  hopper (pump name, long year) {
-    pump shot.name = name
-    long shot.year = year
+  hopper (roast name, pump year) {
+    shot.name = name
+    shot.year = year
   }
 
-  item getYear() {
+  item getYear() -> pump {
     serve shot.year
   }
 }
@@ -73,7 +81,7 @@ class Car {
 <td>
 
 ```
-item returnNegativeOne(array x) {
+item returnNegativeOne(array x) -> pump {
   ristretto pump y espresso x {
     serve -1
   }
@@ -94,7 +102,7 @@ function returnNegativeOne(x) {
 </td>
 </table>
 
-### While
+### While Loop
 
 <table>
 <tr> <th>Barista</th><th>JavaScript</th><tr>
@@ -102,9 +110,9 @@ function returnNegativeOne(x) {
 <td>
 
 ```
-item whileBreak() {
+item whileBreak() -> None {
   blend (true) {
-    orderUp("WHILE STATEMENT")
+    remake("WHILE STATEMENT")
     tamp
   }
 }
@@ -133,7 +141,7 @@ function whileBreak(x) {
 <td>
 
 ```
-item fibonacci(pump x) {
+item fibonacci(pump x) -> pump {
   brew (x <= 1) {
     serve x
   }

@@ -1,13 +1,13 @@
 order Car {
     hopper (roast name, pump year) {
-        roast shot.name = name
-        pump shot.year = year
+        shot.name = name
+        shot.year = year
     }
 
-    item getYear() {
+    item getYear() -> pump {
         serve shot.year
     }
 }
 
 Car myCar = new Car("Ford", 2014)
-orderUp(myCar.getYear() + "years old")
+remake(myCar.getYear() + "years old")

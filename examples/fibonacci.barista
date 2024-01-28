@@ -1,4 +1,4 @@
-item fibonacci(pump x) {
+item fibonacci(pump x) -> pump {
     brew (x <= 1) {
         serve x
     }
@@ -7,4 +7,4 @@ item fibonacci(pump x) {
     }
 }
 
-orderUp("creates an item for fibonacci and serves using recursion")
+remake("creates an item for fibonacci and serves using recursion")

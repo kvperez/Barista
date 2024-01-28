@@ -1,0 +1,8 @@
+item whileBreak() -> None {
+    blend (true) {
+        remake("WHILE STATEMENT")
+        tamp
+    }
+}
+
+remake("creates a while statement")

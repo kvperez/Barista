@@ -1,8 +1,0 @@
-item whileBreak() {
-    blend (true) {
-        orderUp("WHILE STATEMENT")
-        tamp
-    }
-}
-
-orderUp("creates a while statement")
