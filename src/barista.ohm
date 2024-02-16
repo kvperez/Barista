@@ -1,13 +1,14 @@
 Barista {
 
-    Program = Decl+
+    Program = (Stmt | Decl+)
 
     Decl = FuncDecl
-          | VarDecl
-          | ObjDecl
           | ClassDecl
+          | ObjDecl
 
     Stmt = Assignment
+    	  | Increment
+    	  | Decrement
           | IfStmt
           | ForStmt
           | WhileStmt
@@ -17,10 +18,10 @@ Barista {
           | ReturnStmt
 
     FuncDecl = item id Params Type Block
-    ClassDecl = order id "{" Constructor FuncDecl "}"
-    Constructor = hopper "(" Params ")" "{" InitConst "}"
-    InitConst = Type shot "." id "=" Exp
-    ObjDecl = id id "=" new id "(" ListOf<(Param | string), ","> ")"
+    ClassDecl = order id "{" Constructor FuncDecl* "}"
+    Constructor = hopper "(" Params ")" "{" InitConst* "}"
+    InitConst = shot "." id ("=" Exp)?
+    ObjDecl = id id "=" new id "(" ListOf<(Param | string | Exp), ","> ")"
 
     Params = ListOf<Param, ",">
     Param = Type id ("=" Exp)?
@@ -29,20 +30,24 @@ Barista {
     Type = "[" Type "]"                       -- array
           | "{" Type "}"                      -- dictionary
           | Type "?"                          -- optional
-          | "(" ListOf<Type, ","> ")" "->" Type           -- function
+          | "(" (Type)? ListOf<Type, ","> ")" "->" Type           -- function
           | id                                -- id
 
     Assignment = id "=" Exp
+    Increment = id "++"
+    Decrement = id "--"
     IfStmt = brew Exp Block pull Block        -- with_else
            | brew Exp Block pull IfStmt       -- nested_if
            | brew Exp Block                   -- plain_if
     ForStmt = ristretto Exp espresso Exp Block
-    WhileStmt = blend "(" Exp ")" Block
-    CallStmt = Call
+    WhileStmt = blend Exp Block
+    CallStmt = Call | DotCall
     Call = id "(" Args ")"
+    Args = ListOf<Exp, ",">
     BreakStmt = tamp
-    PrintStmt = remake Exp
-    ReturnStmt = serve Exp
+    PrintStmt = remake (CallStmt "+")? Exp
+    ReturnStmt = serve (Exp | InitConst)?
+    DotCall  = id "." id "(" (Call)? ")"
 
     Exp = ("-" | "!" | not) Primary             -- unary
           | Exp0 "?" Exp0 ":" Exp               -- ternary
@@ -63,12 +68,12 @@ Barista {
             | "[" NonemptyListOf<Exp, ","> "]"  -- array
             | ~num Primary "[" Exp "]"          -- subscript
             | ~num Primary "." id               -- number
-            | true ~mut
-            | false ~mut
-            | string ~mut
+            | true
+            | false
+            | string
             | id
             | num
-            | Call
+            | CallStmt
 
     relop = "<=" | "<" | "==" | "!=" | ">=" | ">"
     string = "\"" char* "\""
@@ -77,7 +82,6 @@ Barista {
           | "\\u{" hex hex? hex? hex? hex? hex? "}"       -- codepoint
     control = "\x00".."\x1f" | "\x80".."\x9f"
     hex = hexDigit
-    mut = ~"++" | "--"
 
     item = "item" ~idchar
     order = "order" ~idchar
@@ -98,9 +102,9 @@ Barista {
     or = "or" ~idchar
     not = "not" ~idchar
 
-
     keyword = item | order | hopper | shot | new | brew | pull | ristretto | espresso | blend | tamp | remake | serve | true | false | and | or | not
     id = ~keyword letter idchar*
+    idchar = alnum | "_"
 
     num = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
     space += "$$" (~"\n" any)*               -- comment
