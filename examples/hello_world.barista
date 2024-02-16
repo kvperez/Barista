@@ -1,1 +1,1 @@
-remake("Hello World!")
+remake "Hello World!"

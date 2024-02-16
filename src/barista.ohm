@@ -1,5 +1,109 @@
 Barista {
 
-    Program = Stmt+
+    Program = Decl+
+
+    Decl = FuncDecl
+          | VarDecl
+          | ObjDecl
+          | ClassDecl
+
+    Stmt = Assignment
+          | IfStmt
+          | ForStmt
+          | WhileStmt
+          | CallStmt
+          | BreakStmt
+          | PrintStmt
+          | ReturnStmt
+
+    FuncDecl = item id Params Type Block
+    ClassDecl = order id "{" Constructor FuncDecl "}"
+    Constructor = hopper "(" Params ")" "{" InitConst "}"
+    InitConst = Type shot "." id "=" Exp
+    ObjDecl = id id "=" new id "(" ListOf<(Param | string), ","> ")"
+
+    Params = ListOf<Param, ",">
+    Param = Type id ("=" Exp)?
+    Block = "{" Stmt* "}"
+
+    Type = "[" Type "]"                       -- array
+          | "{" Type "}"                      -- dictionary
+          | Type "?"                          -- optional
+          | "(" ListOf<Type, ","> ")" "->" Type           -- function
+          | id                                -- id
+
+    Assignment = id "=" Exp
+    IfStmt = brew Exp Block pull Block        -- with_else
+           | brew Exp Block pull IfStmt       -- nested_if
+           | brew Exp Block                   -- plain_if
+    ForStmt = ristretto Exp espresso Exp Block
+    WhileStmt = blend "(" Exp ")" Block
+    CallStmt = Call
+    Call = id "(" Args ")"
+    BreakStmt = tamp
+    PrintStmt = remake Exp
+    ReturnStmt = serve Exp
+
+    Exp = ("-" | "!" | not) Primary             -- unary
+          | Exp0 "?" Exp0 ":" Exp               -- ternary
+          | Exp0
+    Exp0 = Exp0 ("||" | or) Exp                 -- or
+          | Exp1
+    Exp1 = Exp1 ("&&" | and) Exp2               -- and
+          | Exp2
+    Exp2 = Exp3 relop Exp3                      -- relop
+          | Exp3
+    Exp3 = Exp3 ("+" | "-") Term                -- addsub
+          | Term
+    Term = Term ("*" | "/" | "%") Factor        -- muldivmod
+          | Factor
+    Factor = Primary "**" Factor                -- power
+            | Primary
+    Primary = "(" Exp ")"                       -- params
+            | "[" NonemptyListOf<Exp, ","> "]"  -- array
+            | ~num Primary "[" Exp "]"          -- subscript
+            | ~num Primary "." id               -- number
+            | true ~mut
+            | false ~mut
+            | string ~mut
+            | id
+            | num
+            | Call
+
+    relop = "<=" | "<" | "==" | "!=" | ">=" | ">"
+    string = "\"" char* "\""
+    char = ~control ~"\\" ~"\"" any
+          | "\\" ("n" | "t" | "\"" | "\\")                -- escape
+          | "\\u{" hex hex? hex? hex? hex? hex? "}"       -- codepoint
+    control = "\x00".."\x1f" | "\x80".."\x9f"
+    hex = hexDigit
+    mut = ~"++" | "--"
+
+    item = "item" ~idchar
+    order = "order" ~idchar
+    hopper = "hopper" ~idchar
+    shot = "shot" ~idchar
+    new = "new" ~idchar
+    brew = "brew" ~idchar
+    pull = "pull" ~idchar
+    ristretto = "ristretto" ~idchar
+    espresso = "espresso" ~idchar
+    blend = "blend" ~idchar
+    tamp = "tamp" ~idchar
+    remake = "remake" ~idchar
+    serve = "serve" ~idchar
+    true = "true" ~idchar
+    false = "false" ~idchar
+    and = "and" ~idchar
+    or = "or" ~idchar
+    not = "not" ~idchar
+
+
+    keyword = item | order | hopper | shot | new | brew | pull | ristretto | espresso | blend | tamp | remake | serve | true | false | and | or | not
+    id = ~keyword letter idchar*
+
+    num = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
+    space += "$$" (~"\n" any)*               -- comment
+
 
 }

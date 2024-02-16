@@ -1,10 +1,8 @@
 item fibonacci(pump x) -> pump {
-    brew (x <= 1) {
+    brew x <= 1 {
         serve x
     }
     pull {
         serve fibonacci(x - 1) + fibonacci(x - 2)
     }
 }
-
-remake("creates an item for fibonacci and serves using recursion")

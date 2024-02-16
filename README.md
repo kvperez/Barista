@@ -4,6 +4,8 @@
 
 A programming language inspired by common terminology I use as a Starbucks Partner. This programming language allows Baristas to explore further than the Pike Place Roast, while maintaining focus on commonly used terms known to coffee brewers. With expertise in this language, Baristas will get an embroidered logo on their Apron or Coffee Master Apron. Baristas will be allowed to continue their _customer connections_ on the web.
 
+By: Kevin Perez
+
 ## Features
 
 - Barista Terminology
@@ -22,7 +24,7 @@ A programming language inspired by common terminology I use as a Starbucks Partn
 <td>
 
 ```
-remake(“Hello World!”)
+remake “Hello World!”
 ```
 
 </td>
@@ -82,7 +84,7 @@ class Car {
 
 ```
 item returnNegativeOne(array x) -> pump {
-  ristretto pump y espresso x {
+  ristretto y espresso x {
     serve -1
   }
 }
@@ -111,8 +113,8 @@ function returnNegativeOne(x) {
 
 ```
 item whileBreak() -> None {
-  blend (true) {
-    remake("WHILE STATEMENT")
+  blend true {
+    remake "WHILE STATEMENT"
     tamp
   }
 }
@@ -142,7 +144,7 @@ function whileBreak(x) {
 
 ```
 item fibonacci(pump x) -> pump {
-  brew (x <= 1) {
+  brew x <= 1 {
     serve x
   }
   pull {
