@@ -3,6 +3,6 @@ item fibonacci(pump x) -> pump {
         serve x
     }
     pull {
-        serve fibonacci(x - 1) + fibonacci(x - 2)
+        serve x - 1
     }
 }

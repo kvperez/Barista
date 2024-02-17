@@ -1,14 +1,15 @@
 Barista {
 
-    Program = (Stmt | Decl+)
+    Program = (Stmt | Decl)+
 
     Decl = FuncDecl
+          | VarDecl
           | ClassDecl
           | ObjDecl
 
     Stmt = Assignment
-    	  | Increment
-    	  | Decrement
+    	    | Increment
+    	    | Decrement
           | IfStmt
           | ForStmt
           | WhileStmt
@@ -18,6 +19,8 @@ Barista {
           | ReturnStmt
 
     FuncDecl = item id Params Type Block
+    VarDecl = (let | const) id "=" Exp                     -- with_init
+            | (let | const) id                             -- without_init
     ClassDecl = order id "{" Constructor FuncDecl* "}"
     Constructor = hopper "(" Params ")" "{" InitConst* "}"
     InitConst = shot "." id ("=" Exp)?
@@ -32,6 +35,7 @@ Barista {
           | Type "?"                          -- optional
           | "(" (Type)? ListOf<Type, ","> ")" "->" Type           -- function
           | id                                -- id
+          | none                              -- none
 
     Assignment = id "=" Exp
     Increment = id "++"
@@ -45,16 +49,16 @@ Barista {
     Call = id "(" Args ")"
     Args = ListOf<Exp, ",">
     BreakStmt = tamp
-    PrintStmt = remake (CallStmt "+")? Exp
+    PrintStmt = remake (CallStmt "+")? ListOf<Exp, ",">
     ReturnStmt = serve (Exp | InitConst)?
     DotCall  = id "." id "(" (Call)? ")"
 
-    Exp = ("-" | "!" | not) Primary             -- unary
+    Exp = ("-" | not) Primary             -- unary
           | Exp0 "?" Exp0 ":" Exp               -- ternary
           | Exp0
-    Exp0 = Exp0 ("||" | or) Exp                 -- or
+    Exp0 = Exp0 (or) Exp                 -- or
           | Exp1
-    Exp1 = Exp1 ("&&" | and) Exp2               -- and
+    Exp1 = Exp1 (and) Exp2               -- and
           | Exp2
     Exp2 = Exp3 relop Exp3                      -- relop
           | Exp3
@@ -101,13 +105,17 @@ Barista {
     and = "and" ~idchar
     or = "or" ~idchar
     not = "not" ~idchar
+    let = "let" ~idchar
+    const = "const" ~idchar
+    none = "none" ~idchar
 
-    keyword = item | order | hopper | shot | new | brew | pull | ristretto | espresso | blend | tamp | remake | serve | true | false | and | or | not
+    keyword = item | order | hopper | shot | new | brew | pull 
+            | ristretto | espresso | blend | tamp | remake | serve 
+            | true | false | and | or | not | let | const | none
     id = ~keyword letter idchar*
-    idchar = alnum | "_"
+    idchar = alnum | "_" | letter
 
     num = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
-    space += "$$" (~"\n" any)*               -- comment
-
+    space += "//" (~"\n" any)* -- comment
 
 }

@@ -1,4 +1,4 @@
-item whileBreak() -> None {
+item whileBreak() -> none {
     blend true {
         remake "WHILE STATEMENT"
         tamp
