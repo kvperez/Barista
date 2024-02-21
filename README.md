@@ -46,7 +46,7 @@ console.log(“Hello World!”)
 
 ```
 order Car {
-  hopper (roast name, pump year) {
+  hopper (name: roast, year: pump) {
     shot.name = name
     shot.year = year
   }
@@ -83,7 +83,7 @@ class Car {
 <td>
 
 ```
-item returnNegativeOne(array x) -> pump {
+item returnNegativeOne(x: array) -> pump {
   ristretto y espresso x {
     serve -1
   }
@@ -112,10 +112,13 @@ function returnNegativeOne(x) {
 <td>
 
 ```
-item whileBreak() -> None {
-  blend true {
-    remake "WHILE STATEMENT"
-    tamp
+item while() -> none {
+  let x = 0
+  let y = 1
+
+  blend x < y {
+    remake "Less Than"
+    x++
   }
 }
 ```
@@ -143,7 +146,7 @@ function whileBreak(x) {
 <td>
 
 ```
-item fibonacci(pump x) -> pump {
+item fibonacci(x: pump) -> pump {
   brew x <= 1 {
     serve x
   }

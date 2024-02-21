@@ -1,5 +1,5 @@
 order Car {
-    hopper (roast name, pump year) {
+    hopper (name: roast, year: pump) {
         shot.name = name
         shot.year = year
     }

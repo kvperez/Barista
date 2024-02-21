@@ -1,4 +1,4 @@
-item fibonacci(pump x) -> pump {
+item fibonacci(x: pump) -> pump {
     brew x <= 1 {
         serve x
     }
