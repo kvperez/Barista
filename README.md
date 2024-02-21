@@ -127,10 +127,11 @@ item while() -> none {
 <td>
 
 ```javascript
-function whileBreak(x) {
-  while (true) {
-    console.log("WHILE STATEMENT")
-    break
+function whileBreak() {
+  let x = 0
+  let y = 1
+  while (x < y) {
+    console.log("Less Than")
   }
 }
 ```
