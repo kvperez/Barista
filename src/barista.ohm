@@ -36,8 +36,7 @@ Barista {
           | none                                -- none
 
     Assignment = id "=" Exp
-    VarDecl = (let | const) id "=" Exp          -- with_init
-             | (let | const) id                 -- without_init
+    VarDecl = (let | const) id "=" Exp
     Increment = id "++"
     Decrement = id "--"
     IfStmt = brew Exp Block pull Block          -- with_else
