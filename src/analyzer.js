@@ -67,6 +67,9 @@ export default function analyze(match) {
     Primary_array() {},
     Primary_subscript() {},
     Primary_number() {},
+    stringlit(_openQuote, _chars, _closeQuote) {
+      return this.sourceString
+    },
     // Exp_comparison(left, op, right) {
     //   return new core.BinaryExpression(op.sourceString, left.rep(), right.rep())
     // },
