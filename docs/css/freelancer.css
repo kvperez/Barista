@@ -49,15 +49,15 @@ hr.star-light {
 
 hr.star-light:after {
   color: #fff;
-  background-color: #f0a0a2;
+  background-color: #63987d;
 }
 
 hr.star-dark {
-  border-color: #f0a0a2;
+  border-color: #63987d;
 }
 
 hr.star-dark:after {
-  color: #f0a0a2;
+  color: #63987d;
   background-color: #ffffff;
 }
 
@@ -111,7 +111,7 @@ section h2 {
 }
 
 #mainNav .navbar-brand {
-  color: #f0a0a2;
+  color: #63987d;
 }
 
 #mainNav .navbar-nav {
@@ -120,21 +120,21 @@ section h2 {
 }
 
 #mainNav .navbar-nav li.nav-item a.nav-link {
-  color: #f0a0a2;
+  color: #63987d;
 }
 
 #mainNav .navbar-nav li.nav-item a.nav-link:hover {
-  color: #f0a0a2;
+  color: #63987d;
   background: #ced4da;
 }
 
 #mainNav .navbar-nav li.nav-item a.nav-link:active,
 #mainNav .navbar-nav li.nav-item a.nav-link:focus {
-  color: #f0a0a2;
+  color: #63987d;
 }
 
 #mainNav .navbar-nav li.nav-item a.nav-link.active {
-  color: #f0a0a2;
+  color: #63987d;
 }
 
 #mainNav .navbar-toggler {
@@ -158,13 +158,13 @@ section h2 {
     margin-top: 0;
   }
   #mainNav .navbar-nav > li.nav-item > a.nav-link.active {
-    color: #f0a0a2;
+    color: #63987d;
     background: #fff;
   }
   #mainNav .navbar-nav > li.nav-item > a.nav-link.active:active,
   #mainNav .navbar-nav > li.nav-item > a.nav-link.active:focus,
   #mainNav .navbar-nav > li.nav-item > a.nav-link.active:hover {
-    color: #f0a0a2;
+    color: #63987d;
     background: #fff;
   }
   #mainNav.navbar-shrink {
@@ -207,7 +207,7 @@ header.masthead h2 {
 
 .portfolio {
   margin-bottom: -15px;
-  background-color: #f0a0a2;
+  background-color: #63987d;
 }
 
 .portfolio .portfolio-item {
@@ -325,7 +325,7 @@ header.masthead h2 {
 }
 
 .floating-label-form-group-with-focus label {
-  color: #f0a0a2;
+  color: #63987d;
 }
 
 form .row:first-child .floating-label-form-group {
@@ -344,7 +344,7 @@ form .row:first-child .floating-label-form-group {
 }
 
 a {
-  color: #f0a0a2;
+  color: #63987d;
 }
 
 a:focus,
@@ -358,7 +358,7 @@ a:active {
 }
 
 .bg-primary {
-  background-color: #f0a0a2 !important;
+  background-color: #63987d !important;
 }
 
 .bg-secondary {
@@ -366,16 +366,16 @@ a:active {
 }
 
 .text-primary {
-  color: #f0a0a2 !important;
+  color: #63987d !important;
 }
 
 .text-secondary {
-  color: #f0a0a2 !important;
+  color: #63987d !important;
 }
 
 .btn-primary {
-  background-color: #f0a0a2;
-  border-color: #f0a0a2;
+  background-color: #63987d;
+  border-color: #63987d;
 }
 
 .btn-primary:hover,
