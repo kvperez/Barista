@@ -195,11 +195,19 @@ remake “Hello World!”
             </div>
           </div>
           <div class="col-sm-12 col-lg-6">
-            <h3 class="text-center text-uppercase text-white">TODO</h3>
+            <h3 class="text-center text-uppercase text-white">Increment X</h3>
             <div class="row">
               <div class="offset-sm-4 col-sm-8 offset-lg-4 col-lg-8">
                 <pre><code class="text-white">
-TODO
+item incrementX() -> none {
+  let x = 0
+  let y = 1
+
+  blend x < y {
+    remake "Less Than"
+    x++
+  }
+}
                   </code></pre>
               </div>
             </div>
@@ -207,11 +215,12 @@ TODO
         </div>
         <div class="row">
           <div class="col-sm-12 col-lg-6">
-            <h3 class="text-center text-uppercase text-white">TODO</h3>
+            <h3 class="text-center text-uppercase text-white">Add Two</h3>
             <div class="row">
               <div class="offset-sm-3 col-sm-6 col-lg-9 offset-lg-3">
                 <pre><code class="text-white">
-TODO
+              item addTwo(x: pump, y: pump) -> pump { brew x <= 1 { serve x }
+              pull { serve x + y } }
                 </code></pre>
               </div>
             </div>
