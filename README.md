@@ -1,6 +1,6 @@
 <img src=./docs/barista.png width="500" height="500">
 
-# Barista
+# [Barista](https://kvperez.github.io/barista)
 
 A programming language inspired by common terminology I use as a Starbucks Partner. This programming language allows Baristas to explore further than the Pike Place Roast, while maintaining focus on commonly used terms known to coffee brewers. With expertise in this language, Baristas will get an embroidered logo on their Apron or Coffee Master Apron. Baristas will be allowed to continue their _customer connections_ on the web.
 

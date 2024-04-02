@@ -4,17 +4,17 @@ export class Program {
   }
 }
 
-export class Type {
-  static BOOLEAN = new Type("boolean")
-  static INT = new Type("pump")
-  static FLOAT = new Type("affogato")
-  static STRING = new Type("roast")
-  static NONE = new Type("none")
-  static ANY = new Type("any")
-  constructor(description) {
-    Object.assign(this, { description })
-  }
-}
+// export class Type {
+//   static BOOLEAN = new Type("boolean")
+//   static INT = new Type("pump")
+//   static FLOAT = new Type("affogato")
+//   static STRING = new Type("roast")
+//   static NONE = new Type("none")
+//   static ANY = new Type("any")
+//   constructor(description) {
+//     Object.assign(this, { description })
+//   }
+// }
 
 export class FunctionDeclaration {
   // Example: function f(x: [int?], y: string): Vector {}
