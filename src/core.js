@@ -1,143 +1,111 @@
-export class Program {
-  constructor(statements, declaration) {
-    Object.assign(this, { statements, declaration })
-  }
+export function program(statements) {
+  return { kind: "Program", statements }
 }
 
-// export class Type {
-//   static BOOLEAN = new Type("boolean")
-//   static INT = new Type("pump")
-//   static FLOAT = new Type("affogato")
-//   static STRING = new Type("roast")
-//   static NONE = new Type("none")
-//   static ANY = new Type("any")
-//   constructor(description) {
-//     Object.assign(this, { description })
-//   }
-// }
-
-export class FunctionDeclaration {
-  // Example: function f(x: [int?], y: string): Vector {}
-  constructor(fun, params, body) {
-    Object.assign(this, { fun, params, body })
-  }
+export function functionDeclaration(fun, params, body) {
+  return { kind: "FunctionDeclaration", fun, params, body }
 }
 
-export class Function {
-  // Generated when processing a function declaration
-  constructor(name, type) {
-    Object.assign(this, { name, type })
-  }
+export function fun(name, type) {
+  return { kind: "Function", name, type }
 }
 
-// IS THIS CORRECT?
-export class FunctionType {
-  constructor(paramTypes, returnType) {
-    Object.assign(this, { paramTypes, returnType })
-  }
+export function variableDeclaration(variable, initializer) {
+  return { kind: "VariableDeclaration", variable, initializer }
 }
 
-export class ClassDeclaration {
-  constructor(id, constructor, fun) {
-    Object.assign(this, { id, constructor, fun })
-  }
+export function variable(name, readOnly, type) {
+  return { kind: "Variable", name, readOnly, type }
 }
 
-export class Constructor {
-  constructor(params, body) {
-    Object.assign(this, { params, body })
-  }
+export function field(name, type) {
+  return { kind: "Field", name, type }
 }
 
-export class InitializeConstructor {
-  constructor(variable, initializer) {
-    Object.assign(this, { variable, initializer })
-  }
+export function classDeclaration(name, type) {
+  return { kind: "ClassDeclaration", name, type }
 }
 
-export class ObjectDeclaration {
-  // !!!!! COMPLETE THIS !!!!!
+export function classType(name, fields, methods) {
+  return { kind: "ClassType", name, fields, methods }
 }
 
-export class Assignment {
-  constructor(target, source) {
-    Object.assign(this, { target, source })
-  }
+export function objectConstructor(name, fields, type) {
+  return { kind: "ObjectConstructor", name, fields, type }
 }
 
-export class VariableDeclaration {
-  constructor(variable, initializer) {
-    Object.assign(this, { variable, initializer })
-  }
+export function arrayType(baseType) {
+  return { kind: "ArrayType", baseType }
 }
 
-export class Variable {
-  constructor(name) {
-    Object.assign(this, { name })
-  }
+export function functionType(paramTypes, returnType) {
+  return { kind: "FunctionType", paramTypes, returnType }
 }
 
-export class Increment {
-  constructor(variable) {
-    this.variable = variable
-  }
+export function optionalType(baseType) {
+  return { kind: "OptionalType", baseType }
 }
 
-export class Decrement {
-  constructor(variable) {
-    this.variable = variable
-  }
-}
-export class Conditional {
-  constructor(test, consequent, alternate, type) {
-    Object.assign(this, { test, consequent, alternate, type })
-  }
+export function increment(variable) {
+  return { kind: "Increment", variable }
 }
 
-export class IfStatement {
-  constructor(test, consequent, alternate) {
-    Object.assign(this, { test, consequent, alternate })
-  }
+export function decrement(variable) {
+  return { kind: "Decrement", variable }
 }
 
-export class ForStatement {
-  constructor(iterator, collection, body) {
-    Object.assign(this, { iterator, collection, body })
-  }
+export function assignment(target, source) {
+  return { kind: "Assignment", target, source }
 }
 
-export class WhileStatement {
-  constructor(test, body) {
-    Object.assign(this, { test, body })
-  }
+export const breakStatement = { kind: "BreakStatement" }
+
+export function returnStatement(expression) {
+  return { kind: "ReturnStatement", expression }
 }
 
-export class CallStatement {
-  // !!!!! COMPLETE THIS !!!!!
+export function ifStatement(test, consequent, alternate) {
+  return { kind: "IfStatement", test, consequent, alternate }
 }
 
-export class BreakStatement {}
-
-export class PrintStatement {
-  constructor(argument) {
-    this.argument = argument
-  }
+export function elseIfStatement(test, consequent) {
+  return { kind: "elseIfStatement", test, consequent }
 }
 
-export class ReturnStatement {
-  constructor(expression) {
-    this.expression = expression
-  }
+export function elseStatement(consequent) {
+  return { kind: "elseStatement", consequent }
 }
 
-export class BinaryExpression {
-  constructor(op, left, right) {
-    Object.assign(this, { op, left, right })
-  }
+export function whileStatement(test, body) {
+  return { kind: "WhileStatement", test, body }
 }
 
-export class UnaryExpression {
-  constructor(op, operand) {
-    Object.assign(this, { op, operand })
-  }
+export function forStatement(iterator, collection, body) {
+  return { kind: "ForStatement", iterator, collection, body }
 }
+
+export function conditional(test, consequent, alternate, type) {
+  return { kind: "Conditional", test, consequent, alternate, type }
+}
+
+export function binaryExpression(op, left, right, type) {
+  return { kind: "BinaryExpression", op, left, right, type }
+}
+
+export function unaryExpression(op, operand, type) {
+  return { kind: "UnaryExpression", op, operand, type }
+}
+
+export const standardLibrary = Object.freeze({
+  int: intType,
+  float: floatType,
+  boolean: boolType,
+  string: stringType,
+  none: noneType,
+  any: anyType,
+})
+
+String.prototype.type = stringType
+Number.prototype.type = floatType
+BigInt.prototype.type = intType
+Boolean.prototype.type = boolType

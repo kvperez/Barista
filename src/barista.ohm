@@ -1,13 +1,12 @@
 Barista {
 
-    Program = (Declaration | Statement)+
+    Program = Statement+
 
-    Declaration = FuncDecl
-                 | ClassDecl
-                 | ObjDecl
-
-    Statement = Assignment
+    Statement = FuncDecl
+               | ClassDecl
+               | ObjDecl
                | VarDecl
+               | Assignment
     	         | Increment
     	         | Decrement
                | IfStmt
@@ -22,7 +21,9 @@ Barista {
     ClassDecl = order id "{" Constructor FuncDecl* "}"
     Constructor = hopper "(" Params ")" "{" InitConst* "}"
     InitConst = shot "." id ("=" Exp)?
-    ObjDecl = id id "=" new id "(" ListOf<(Param | string | Exp), ","> ")"
+    ObjDecl = id id "=" new id "(" ListOf<(Field | string | Exp), ","> ")"
+    Field = id ":" Type
+    VarDecl = (let | const) id "=" Exp
 
     Params = ListOf<Param, ",">
     Param = id ":" Type
@@ -36,7 +37,6 @@ Barista {
           | none                                -- none
 
     Assignment = id "=" Exp
-    VarDecl = (let | const) id "=" Exp
     Increment = id "++"
     Decrement = id "--"
     IfStmt = brew Exp Block pull Block          -- with_else

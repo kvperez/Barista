@@ -5,7 +5,7 @@ const FLOAT = core.floatType
 const STRING = core.stringType
 const BOOLEAN = core.boolType
 const ANY = core.anyType
-const VOID = core.voidType
+const NONE = core.noneType
 
 class Context {
   constructor({
@@ -74,27 +74,11 @@ export default function analyze(match) {
     must(e.type?.kind === "OptionalType", "Expected an optional", at)
   }
 
-  // NOT DOING STRUCTS IN MY LANGUAGE
-  // function mustHaveAStructType(e, at) {
-  //   must(e.type?.kind === "StructType", "Expected a struct", at)
-  // }
-
-  // function mustHaveAnOptionalStructType(e, at) {
-  //   // Used to check e?.x expressions, e must be an optional struct
-  //   must(
-  //     e.type?.kind === "OptionalType" && e.type.baseType?.kind === "StructType",
-  //     "Expected an optional struct",
-  //     at
-  //   )
-  // }
-
   function mustBothHaveTheSameType(e1, e2, at) {
     must(equivalent(e1.type, e2.type), "Operands do not have the same type", at)
   }
 
   function mustAllHaveSameType(expressions, at) {
-    // Used to check the elements of an array expression, and the two
-    // arms of a conditional expression, among other scenarios.
     must(
       expressions
         .slice(1)
@@ -111,19 +95,6 @@ export default function analyze(match) {
   function mustBeAnArrayType(t, at) {
     must(t?.kind === "ArrayType", "Must be an array type", at)
   }
-
-  // function includesAsField(structType, type) {
-  //   return structType.fields.some(
-  //     (field) =>
-  //       field.type === type ||
-  //       (field.type?.kind === "StructType" && includesAsField(field.type, type))
-  //   )
-  // }
-
-  // function mustNotBeSelfContaining(structType, at) {
-  //   const containsSelf = includesAsField(structType, structType)
-  //   must(!containsSelf, "Struct type must not be self-containing", at)
-  // }
 
   function equivalent(t1, t2) {
     return (
@@ -166,8 +137,8 @@ export default function analyze(match) {
         return "string"
       case "BoolType":
         return "boolean"
-      case "VoidType":
-        return "void"
+      case "NoneType":
+        return "none"
       case "AnyType":
         return "any"
       case "StructType":
@@ -221,12 +192,12 @@ export default function analyze(match) {
   }
 
   function mustNotReturnAnything(f, at) {
-    must(f.type.returnType === VOID, "Something should be returned", at)
+    must(f.type.returnType === NONE, "Something should be returned", at)
   }
 
   function mustReturnSomething(f, at) {
     must(
-      f.type.returnType !== VOID,
+      f.type.returnType !== NONE,
       "Cannot serve a value from this function",
       at
     )
@@ -250,8 +221,30 @@ export default function analyze(match) {
     Constructor(_hopper, params, initconst) {},
     InitConst(_shot, id, exp) {},
     ObjDecl(id, id, _new, id) {},
-    Params(paramList) {},
-    Param(id, _colon, type) {},
+    VarDecl(modifier, id, _eq, exp) {
+      const initializer = exp.rep()
+      const readOnly = modifier.sourceString === "const"
+      const variable = core.variable(
+        id.sourceString,
+        readOnly,
+        initializer.type
+      )
+      mustNotAlreadyBeDeclared(id.sourceString, { at: id })
+      context.add(id.sourceString, variable)
+      return core.variableDeclaration(variable, initializer)
+    },
+    Field(id, _colon, type) {
+      return core.field(id.sourceString, type.rep())
+    },
+    Params(paramList) {
+      return paramList.asIteration().children.map((p) => p.rep())
+    },
+    Param(id, _colon, type) {
+      const param = core.variable(id.sourceString, false, type.rep())
+      mustNotAlreadyBeDeclared(param.name, { at: id })
+      context.add(param.name, param)
+      return param
+    },
     Block(_open, stmt, _close) {
       return statements.children.map((s) => s.rep())
     },
@@ -277,11 +270,49 @@ export default function analyze(match) {
     Assignment(id, _eq, experssion) {
       return new core.Assignment(id.sourceString, experssion.rep())
     },
-    VarDecl(modifier, id, _eq, exp) {},
-    IfStmt_with_else(_brew, exp, block, _pull, block) {},
-    IfStmt_nested_if(_else, stmt) {},
-    IfStmt_plain_if(_else, block) {},
-    ForStmt() {},
+    VarDecl(modifier, id, _eq, exp) {
+      const initializer = exp.rep()
+      const readOnly = modifier.sourceString === "const"
+      const variable = core.variable(
+        id.sourceString,
+        readOnly,
+        initializer.type
+      )
+      mustNotAlreadyBeDeclared(id.sourceString, { at: id })
+      context.add(id.sourceString, variable)
+      return core.variableDeclaration(variable, initializer)
+    },
+    IfStmt_with_else(_brew, exp, block1, _pull, block2) {
+      const test = exp.rep()
+      mustHaveBooleanType(test, { at: exp })
+      context = context.newChildContext()
+      const consequent = block1.rep()
+      context = context.parent
+      context = context.newChildContext()
+      const alternate = block2.rep()
+      context = context.parent
+      return core.ifStatement(test, consequent, alternate)
+    },
+
+    IfStmt_nested_if(_brew, exp, block, _pull, trailingIfStatement) {
+      const test = exp.rep()
+      mustHaveBooleanType(test, { at: exp })
+      context = context.newChildContext()
+      const consequent = block.rep()
+      context = context.parent
+      const alternate = trailingIfStatement.rep()
+      return core.ifStatement(test, consequent, alternate)
+    },
+
+    IfStmt_plain_if(_brew, exp, block) {
+      const test = exp.rep()
+      mustHaveBooleanType(test, { at: exp })
+      context = context.newChildContext()
+      const consequent = block.rep()
+      context = context.parent
+      return core.shortIfStatement(test, consequent)
+    },
+    ForStmt(_ristretto, exp, _espresso, exp, block) {},
     WhileStmt(_while, exp, block) {
       return new core.WhileStatement(exp.rep(), block.rep())
     },
