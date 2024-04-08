@@ -30,13 +30,20 @@ export function classType(name, fields, methods) {
   return { kind: "ClassType", name, fields, methods }
 }
 
-export function objectConstructor(name, fields, type) {
-  return { kind: "ObjectConstructor", name, fields, type }
-}
+// export function objectConstructor(name, fields, type) {
+//   return { kind: "ObjectConstructor", name, fields, type }
+// }
 
 export function arrayType(baseType) {
   return { kind: "ArrayType", baseType }
 }
+
+export const boolType = { kind: "BoolType" }
+export const intType = { kind: "IntType" }
+export const floatType = { kind: "FloatType" }
+export const stringType = { kind: "StringType" }
+export const noneType = { kind: "NoneType" }
+export const anyType = { kind: "AnyType" }
 
 export function functionType(paramTypes, returnType) {
   return { kind: "FunctionType", paramTypes, returnType }
@@ -88,11 +95,11 @@ export function conditional(test, consequent, alternate, type) {
   return { kind: "Conditional", test, consequent, alternate, type }
 }
 
-export function binaryExpression(op, left, right, type) {
+export function binary(op, left, right, type) {
   return { kind: "BinaryExpression", op, left, right, type }
 }
 
-export function unaryExpression(op, operand, type) {
+export function unary(op, operand, type) {
   return { kind: "UnaryExpression", op, operand, type }
 }
 
@@ -107,5 +114,4 @@ export const standardLibrary = Object.freeze({
 
 String.prototype.type = stringType
 Number.prototype.type = floatType
-BigInt.prototype.type = intType
 Boolean.prototype.type = boolType

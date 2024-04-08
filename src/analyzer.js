@@ -43,39 +43,71 @@ export default function analyze(match) {
   }
 
   function mustNotAlreadyBeDeclared(name, at) {
-    must(!context.lookup(name), `Identifier ${name} already declared`, at)
+    must(
+      !context.lookup(name),
+      `Ingredient ${name} already declared, during PEAK??`,
+      at
+    )
   }
 
   function mustHaveBeenFound(entity, name, at) {
-    must(entity, `Identifier ${name} not declared`, at)
+    must(entity, `Ingredient ${name} not declared, during PEAK??`, at)
   }
 
   function mustHaveNumericType(e, at) {
-    must([INT, FLOAT].includes(e.type), "Expected a pump", at)
+    must(
+      [INT, FLOAT].includes(e.type),
+      "Expected a pump amount, I need it at the window now",
+      at
+    )
   }
 
   function mustHaveNumericOrStringType(e, at) {
-    must([INT, FLOAT, STRING].includes(e.type), "Expected a pump or roast", at)
+    must(
+      [INT, FLOAT, STRING].includes(e.type),
+      "Expected a pump amount or roast name, I need it at the window now",
+      at
+    )
   }
 
   function mustHaveBooleanType(e, at) {
-    must(e.type === BOOLEAN, "Expected a boolean", at)
+    must(
+      e.type === BOOLEAN,
+      "Expected a boolean, I need it at the window now",
+      at
+    )
   }
 
   function mustHaveIntegerType(e, at) {
-    must(e.type === INT, "Expected an pump", at)
+    must(
+      e.type === INT,
+      "Expected an pump amount, I need it at the window now",
+      at
+    )
   }
 
   function mustHaveAnArrayType(e, at) {
-    must(e.type?.kind === "ArrayType", "Expected an array", at)
+    must(
+      e.type?.kind === "ArrayType",
+      "Expected an array, I need it at the window now",
+      at
+    )
   }
 
   function mustHaveAnOptionalType(e, at) {
-    must(e.type?.kind === "OptionalType", "Expected an optional", at)
+    must(
+      e.type?.kind === "OptionalType",
+      "Expected an optional, I need it at the window now",
+      at
+    )
   }
 
   function mustBothHaveTheSameType(e1, e2, at) {
-    must(equivalent(e1.type, e2.type), "Operands do not have the same type", at)
+    must(
+      equivalent(e1.type, e2.type),
+      "Operands do not have the same type, its like asking for a white mocha and receiving a mocha",
+      at
+    )
   }
 
   function mustAllHaveSameType(expressions, at) {
@@ -89,7 +121,11 @@ export default function analyze(match) {
   }
 
   function mustBeAType(e, at) {
-    must(e?.kind.endsWith("Type"), "Type expected", at)
+    must(
+      e?.kind.endsWith("Type"),
+      "Type expected, you want a tall, grande, venti, or trenta",
+      at
+    )
   }
 
   function mustBeAnArrayType(t, at) {
@@ -167,23 +203,27 @@ export default function analyze(match) {
 
   function mustHaveDistinctFields(type, at) {
     const fieldNames = new Set(type.fields.map((f) => f.name))
-    must(fieldNames.size === type.fields.length, "Fields must be distinct", at)
+    must(
+      fieldNames.size === type.fields.length,
+      "Fields must be distinct, you want it iced or hot",
+      at
+    )
   }
 
   function mustHaveMember(structType, field, at) {
     must(
       structType.fields.map((f) => f.name).includes(field),
-      "No such field",
+      "No such field, drink does not exist",
       at
     )
   }
 
   function mustBeInLoop(at) {
-    must(context.inLoop, "Tamp can only appear in a loop", at)
+    must(context.inLoop, "Tamp can only appear in a blend", at)
   }
 
   function mustBeInAFunction(at) {
-    must(context.function, "Serve can only appear in a function", at)
+    must(context.function, "Serve can only appear in a item", at)
   }
 
   function mustBeCallable(e, at) {
@@ -192,15 +232,11 @@ export default function analyze(match) {
   }
 
   function mustNotReturnAnything(f, at) {
-    must(f.type.returnType === NONE, "Something should be returned", at)
+    must(f.type.returnType === NONE, "Something should be served", at)
   }
 
   function mustReturnSomething(f, at) {
-    must(
-      f.type.returnType !== NONE,
-      "Cannot serve a value from this function",
-      at
-    )
+    must(f.type.returnType !== NONE, "Cannot serve a value from this item", at)
   }
 
   function mustBeReturnable(e, { from: f }, at) {
@@ -214,9 +250,25 @@ export default function analyze(match) {
 
   const analyzer = match.matcher.grammar.createSemantics().addOperation("rep", {
     Program(statements) {
-      return new core.Program(statements.children.map((s) => s.rep()))
+      return new core.program(statements.children.map((s) => s.rep()))
     },
-    FuncDecl(_item, id, params, type, block) {},
+    FuncDecl(_item, id, parameters, type, block) {
+      const fun = core.fun(id.sourceString)
+      mustNotAlreadyBeDeclared(id.sourceString, { at: id })
+      context.add(id.sourceString, fun)
+
+      context = context.newChildContext({ inLoop: false, function: fun })
+      const params = parameters.rep()
+
+      const paramTypes = params.map((param) => param.type)
+      const returnType = type.children?.[0]?.rep() ?? VOID
+      fun.type = core.functionType(paramTypes, returnType)
+
+      const body = block.rep()
+
+      context = context.parent
+      return core.functionDeclaration(fun, params, body)
+    },
     ClassDecl(_order, id, _open, constructor, fundecl, _close) {},
     Constructor(_hopper, params, initconst) {},
     InitConst(_shot, id, exp) {},
@@ -245,7 +297,7 @@ export default function analyze(match) {
       context.add(param.name, param)
       return param
     },
-    Block(_open, stmt, _close) {
+    Block(_open, statements, _close) {
       return statements.children.map((s) => s.rep())
     },
     Type_array(_left, baseType, _right) {
@@ -266,9 +318,8 @@ export default function analyze(match) {
       mustBeAType(entity, { at: id })
       return entity
     },
-    Type_none() {},
     Assignment(id, _eq, experssion) {
-      return new core.Assignment(id.sourceString, experssion.rep())
+      return new core.assignment(id.sourceString, experssion.rep())
     },
     VarDecl(modifier, id, _eq, exp) {
       const initializer = exp.rep()
@@ -314,32 +365,123 @@ export default function analyze(match) {
     },
     ForStmt(_ristretto, exp, _espresso, exp, block) {},
     WhileStmt(_while, exp, block) {
-      return new core.WhileStatement(exp.rep(), block.rep())
+      return new core.whileStatement(exp.rep(), block.rep())
     },
     CallStmt() {},
     Call() {},
-    Args() {},
     BreakStmt(_break) {
-      return new core.BreakStatement()
+      return new core.breakStatement()
     },
     PrintStmt(_print, exp) {
       return new core.PrintStatement(exp.rep())
     },
-    ReturnStmt() {},
+    ReturnStmt(returnKeyword, exp) {
+      mustBeInAFunction({ at: returnKeyword })
+      mustReturnSomething(context.function, { at: returnKeyword })
+      const returnExpression = exp.rep()
+      mustBeReturnable(
+        returnExpression,
+        { from: context.function },
+        { at: exp }
+      )
+      return core.returnStatement(returnExpression)
+    },
     DotCall() {},
-    Exp_unary() {},
-    Exp0_or() {},
-    Exp1_and() {},
-    Exp2_relop() {},
-    Exp3_addsub() {},
-    Term_muldivmod() {},
-    Factor_power() {},
-    Primary_params() {},
-    Primary_array() {},
+    Exp_conditional(exp, _questionMark, exp1, colon, exp2) {
+      const test = exp.rep()
+      mustHaveBooleanType(test, { at: exp })
+      const [consequent, alternate] = [exp1.rep(), exp2.rep()]
+      mustBothHaveTheSameType(consequent, alternate, { at: colon })
+      return core.conditional(test, consequent, alternate, consequent.type)
+    },
+    Exp0_or(exp1, _or, exp2) {
+      let left = exp1.rep()
+      mustHaveBooleanType(left, { at: exp1 })
+      for (let e of exp2.children) {
+        let right = e.rep()
+        mustHaveBooleanType(right, { at: e })
+        left = core.binary("or", left, right, BOOLEAN)
+      }
+      return left
+    },
+    Exp1_and(exp1, _and, exp2) {
+      let left = exp1.rep()
+      mustHaveBooleanType(left, { at: exp1 })
+      for (let e of exp2.children) {
+        let right = e.rep()
+        mustHaveBooleanType(right, { at: e })
+        left = core.binary("and", left, right, BOOLEAN)
+      }
+      return left
+    },
+    Exp2_relop(exp1, relop, exp2) {
+      const [left, op, right] = [exp1.rep(), relop.sourceString, exp2.rep()]
+      if (["<", "<=", ">", ">="].includes(op)) {
+        mustHaveNumericOrStringType(left, { at: exp1 })
+      }
+      mustBothHaveTheSameType(left, right, { at: relop })
+      return core.binary(op, left, right, BOOLEAN)
+    },
+    Exp3_addsub(exp1, addOp, exp2) {
+      const [left, op, right] = [exp1.rep(), addOp.sourceString, exp2.rep()]
+      if (op === "+") {
+        mustHaveNumericOrStringType(left, { at: exp1 })
+      } else {
+        mustHaveNumericType(left, { at: exp1 })
+      }
+      mustBothHaveTheSameType(left, right, { at: addOp })
+      return core.binary(op, left, right, left.type)
+    },
+    Term_muldivmod(exp1, mulOp, exp2) {
+      const [left, op, right] = [exp1.rep(), mulOp.sourceString, exp2.rep()]
+      mustHaveNumericType(left, { at: exp1 })
+      mustBothHaveTheSameType(left, right, { at: mulOp })
+      return core.binary(op, left, right, left.type)
+    },
+    Factor_power(exp1, powerOp, exp2) {
+      const [left, op, right] = [exp1.rep(), powerOp.sourceString, exp2.rep()]
+      mustHaveNumericType(left, { at: exp1 })
+      mustBothHaveTheSameType(left, right, { at: powerOp })
+      return core.binary(op, left, right, left.type)
+    },
+    Factor_unary(unaryOp, exp) {
+      const [op, operand] = [unaryOp.sourceString, exp.rep()]
+      let type
+      if (op === "-") {
+        mustHaveNumericType(operand, { at: exp })
+        type = operand.type
+      } else if (op === "not") {
+        mustHaveBooleanType(operand, { at: exp })
+        type = BOOLEAN
+      }
+      return core.unary(op, operand, type)
+    },
+    Primary_params(_open, expression, _close) {
+      return expression.rep()
+    },
+    Primary_array(_open, args, _close) {
+      const elements = args.asIteration().children.map((e) => e.rep())
+      mustAllHaveSameType(elements, { at: args })
+      return core.arrayExpression(elements)
+    },
     Primary_subscript() {},
     Primary_number() {},
-    stringlit(_openQuote, _chars, _closeQuote) {
+    Primary_id(id) {
+      const entity = context.lookup(id.sourceString)
+      mustHaveBeenFound(entity, id.sourceString, { at: id })
+      return entity
+    },
+    true(_) {
+      return true
+    },
+    false(_) {
+      return false
+    },
+    string(_openQuote, _chars, _closeQuote) {
       return this.sourceString
+    },
+    num(_main, _dot, _fract, _e, _sign, _exp) {
+      return Number(this.sourceString)
     },
     // Exp_comparison(left, op, right) {
     //   return new core.BinaryExpression(op.sourceString, left.rep(), right.rep())

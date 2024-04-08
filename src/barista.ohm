@@ -17,7 +17,7 @@ Barista {
                | PrintStmt
                | ReturnStmt
 
-    FuncDecl = item id Params Type Block
+    FuncDecl = item id Params (Type)? Block
     ClassDecl = order id "{" Constructor FuncDecl* "}"
     Constructor = hopper "(" Params ")" "{" InitConst* "}"
     InitConst = shot "." id ("=" Exp)?
@@ -34,7 +34,6 @@ Barista {
           | Type "?"                            -- optional
           | "(" Params ")" "->" Type            -- function
           | id                                  -- id
-          | none                                -- none
 
     Assignment = id "=" Exp
     Increment = id "++"
@@ -45,15 +44,13 @@ Barista {
     ForStmt = ristretto Exp espresso Exp Block
     WhileStmt = blend Exp Block
     CallStmt = Call | DotCall
-    Call = id "(" Args ")"
-    Args = ListOf<Exp, ",">
+    Call = id "(" ListOf<Exp, ","> ")"
     BreakStmt = tamp
     PrintStmt = remake (CallStmt "+")? ListOf<Exp, ",">
-    ReturnStmt = serve (Exp | InitConst)?
+    ReturnStmt = serve Exp
     DotCall  = id "." id "(" (Call)? ")"
 
-    Exp = ("-" | not) Primary                   -- unary
-          | Exp0 "?" Exp0 ":" Exp               -- ternary
+    Exp = Exp0 "?" Exp0 ":" Exp                 -- conditional
           | Exp0
     Exp0 = Exp0 (or) Exp                        -- or
           | Exp1
@@ -67,6 +64,7 @@ Barista {
           | Factor
     Factor = Primary "**" Factor                -- power
             | Primary
+            | ("-" | not) Primary        	      -- unary
     Primary = "(" Exp ")"                       -- params
             | "[" NonemptyListOf<Exp, ","> "]"  -- array
             | ~num Primary "[" Exp "]"          -- subscript
@@ -74,7 +72,7 @@ Barista {
             | true
             | false
             | string
-            | id
+            | id                                -- id
             | num
             | CallStmt
 
