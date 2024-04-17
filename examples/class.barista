@@ -8,7 +8,3 @@ order Car {
         shot.year
     }
 }
-
-Car myCar = new Car("Ford", 2014)
-
-remake myCar.getYear() + "years old"

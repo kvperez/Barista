@@ -201,23 +201,6 @@ export default function analyze(match) {
     must(!e.readOnly, `Cannot assign to constant ${e.name}`, at)
   }
 
-  function mustHaveDistinctFields(type, at) {
-    const fieldNames = new Set(type.fields.map((f) => f.name))
-    must(
-      fieldNames.size === type.fields.length,
-      "Fields must be distinct, you want it iced or hot",
-      at
-    )
-  }
-
-  function mustHaveMember(structType, field, at) {
-    must(
-      structType.fields.map((f) => f.name).includes(field),
-      "No such field, drink does not exist",
-      at
-    )
-  }
-
   function mustBeInLoop(at) {
     must(context.inLoop, "Tamp can only appear in a blend", at)
   }
@@ -250,7 +233,7 @@ export default function analyze(match) {
 
   const analyzer = match.matcher.grammar.createSemantics().addOperation("rep", {
     Program(statements) {
-      return new core.program(statements.children.map((s) => s.rep()))
+      return core.program(statements.children.map((s) => s.rep()))
     },
     FuncDecl(_item, id, parameters, type, block) {
       const fun = core.fun(id.sourceString)
@@ -272,7 +255,6 @@ export default function analyze(match) {
     ClassDecl(_order, id, _open, constructor, fundecl, _close) {},
     Constructor(_hopper, params, initconst) {},
     InitConst(_shot, id, exp) {},
-    ObjDecl(id, id, _new, id) {},
     VarDecl(modifier, id, _eq, exp) {
       const initializer = exp.rep()
       const readOnly = modifier.sourceString === "const"
@@ -319,7 +301,7 @@ export default function analyze(match) {
       return entity
     },
     Assignment(id, _eq, experssion) {
-      return new core.assignment(id.sourceString, experssion.rep())
+      return core.assignment(id.sourceString, experssion.rep())
     },
     VarDecl(modifier, id, _eq, exp) {
       const initializer = exp.rep()
@@ -344,7 +326,6 @@ export default function analyze(match) {
       context = context.parent
       return core.ifStatement(test, consequent, alternate)
     },
-
     IfStmt_nested_if(_brew, exp, block, _pull, trailingIfStatement) {
       const test = exp.rep()
       mustHaveBooleanType(test, { at: exp })
@@ -354,7 +335,6 @@ export default function analyze(match) {
       const alternate = trailingIfStatement.rep()
       return core.ifStatement(test, consequent, alternate)
     },
-
     IfStmt_plain_if(_brew, exp, block) {
       const test = exp.rep()
       mustHaveBooleanType(test, { at: exp })
@@ -363,17 +343,31 @@ export default function analyze(match) {
       context = context.parent
       return core.shortIfStatement(test, consequent)
     },
-    ForStmt(_ristretto, exp, _espresso, exp, block) {},
-    WhileStmt(_while, exp, block) {
-      return new core.whileStatement(exp.rep(), block.rep())
+    ForStmt(_ristretto, id, _espresso, exp, block) {
+      const collection = exp.rep()
+      mustHaveAnArrayType(collection, { at: exp })
+      const iterator = core.variable(
+        id.sourceString,
+        true,
+        collection.type.baseType
+      )
+      context = context.newChildContext({ inLoop: true })
+      context.add(iterator.name, iterator)
+      const body = block.rep()
+      context = context.parent
+      return core.forStatement(iterator, collection, body)
     },
-    CallStmt() {},
+    WhileStmt(_while, exp, block) {
+      return core.whileStatement(exp.rep(), block.rep())
+    },
+
     Call() {},
     BreakStmt(_break) {
-      return new core.breakStatement()
+      mustBeInLoop({ at: _break })
+      return core.breakStatement()
     },
     PrintStmt(_print, exp) {
-      return new core.PrintStatement(exp.rep())
+      return core.PrintStatement(exp.rep())
     },
     ReturnStmt(returnKeyword, exp) {
       mustBeInAFunction({ at: returnKeyword })
@@ -386,7 +380,6 @@ export default function analyze(match) {
       )
       return core.returnStatement(returnExpression)
     },
-    DotCall() {},
     Exp_conditional(exp, _questionMark, exp1, colon, exp2) {
       const test = exp.rep()
       mustHaveBooleanType(test, { at: exp })
@@ -464,8 +457,26 @@ export default function analyze(match) {
       mustAllHaveSameType(elements, { at: args })
       return core.arrayExpression(elements)
     },
-    Primary_subscript() {},
-    Primary_number() {},
+    Primary_subscript(exp1, _open, exp2, _close) {
+      const [array, subscript] = [exp1.rep(), exp2.rep()]
+      mustHaveAnArrayType(array, { at: exp1 })
+      mustHaveIntegerType(subscript, { at: exp2 })
+      return core.subscript(array, subscript)
+    },
+    Primary_member() {
+      const object = exp.rep()
+      let structType
+      if (dot.sourceString === "?.") {
+        mustHaveAnOptionalStructType(object, { at: exp })
+        structType = object.type.baseType
+      } else {
+        mustHaveAStructType(object, { at: exp })
+        structType = object.type
+      }
+      mustHaveMember(structType, id.sourceString, { at: id })
+      const field = structType.fields.find((f) => f.name === id.sourceString)
+      return core.memberExpression(object, dot.sourceString, field)
+    },
     Primary_id(id) {
       const entity = context.lookup(id.sourceString)
       mustHaveBeenFound(entity, id.sourceString, { at: id })
@@ -483,31 +494,6 @@ export default function analyze(match) {
     num(_main, _dot, _fract, _e, _sign, _exp) {
       return Number(this.sourceString)
     },
-    // Exp_comparison(left, op, right) {
-    //   return new core.BinaryExpression(op.sourceString, left.rep(), right.rep())
-    // },
-    // Exp1_binary(left, op, right) {
-    //   return new core.BinaryExpression(op.sourceString, left.rep(), right.rep())
-    // },
-    // Term_binary(left, op, right) {
-    //   return new core.BinaryExpression(op.sourceString, left.rep(), right.rep())
-    // },
-    // Factor_binary(left, op, right) {
-    //   return new core.BinaryExpression(op.sourceString, left.rep(), right.rep())
-    // },
-    // Factor_negation(op, operand) {
-    //   return new core.UnaryExpression(op.sourceString, operand.rep())
-    // },
-    // Primary_call(id, _open, args, _close) {},
-    // Primary_parens(_open, exp, _close) {
-    //   return new exp.rep()
-    // },
-    // Primary_id(id) {
-    //   return new core.Variable(id.sourceString)
-    // },
-    // numeral(_main, _dot, _fract, _e, _sign, _exp) {
-    //   return Number(this.sourceString)
-    // },
   })
 
   return analyzer(match).rep()

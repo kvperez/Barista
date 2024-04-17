@@ -4,7 +4,6 @@ Barista {
 
     Statement = FuncDecl
                | ClassDecl
-               | ObjDecl
                | VarDecl
                | Assignment
     	         | Increment
@@ -21,7 +20,6 @@ Barista {
     ClassDecl = order id "{" Constructor FuncDecl* "}"
     Constructor = hopper "(" Params ")" "{" InitConst* "}"
     InitConst = shot "." id ("=" Exp)?
-    ObjDecl = id id "=" new id "(" ListOf<(Field | string | Exp), ","> ")"
     Field = id ":" Type
     VarDecl = (let | const) id "=" Exp
 
@@ -41,14 +39,12 @@ Barista {
     IfStmt = brew Exp Block pull Block          -- with_else
            | brew Exp Block pull IfStmt         -- nested_if
            | brew Exp Block                     -- plain_if
-    ForStmt = ristretto Exp espresso Exp Block
+    ForStmt = ristretto id espresso Exp Block
     WhileStmt = blend Exp Block
-    CallStmt = Call | DotCall
     Call = id "(" ListOf<Exp, ","> ")"
     BreakStmt = tamp
-    PrintStmt = remake (CallStmt "+")? ListOf<Exp, ",">
+    PrintStmt = remake Exp
     ReturnStmt = serve Exp
-    DotCall  = id "." id "(" (Call)? ")"
 
     Exp = Exp0 "?" Exp0 ":" Exp                 -- conditional
           | Exp0
@@ -68,13 +64,12 @@ Barista {
     Primary = "(" Exp ")"                       -- params
             | "[" NonemptyListOf<Exp, ","> "]"  -- array
             | ~num Primary "[" Exp "]"          -- subscript
-            | ~num Primary "." id               -- number
+            | Primary "."  id                   -- member
             | true
             | false
             | string
             | id                                -- id
             | num
-            | CallStmt
 
     relop = "<=" | "<" | "==" | "!=" | ">=" | ">"
     string = "\"" char* "\""

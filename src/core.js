@@ -30,9 +30,9 @@ export function classType(name, fields, methods) {
   return { kind: "ClassType", name, fields, methods }
 }
 
-// export function objectConstructor(name, fields, type) {
-//   return { kind: "ObjectConstructor", name, fields, type }
-// }
+export function objectConstructor(name, fields, type) {
+  return { kind: "ObjectConstructor", name, fields, type }
+}
 
 export function arrayType(baseType) {
   return { kind: "ArrayType", baseType }
@@ -63,6 +63,19 @@ export function decrement(variable) {
 
 export function assignment(target, source) {
   return { kind: "Assignment", target, source }
+}
+
+export function subscript(array, index) {
+  return {
+    kind: "SubscriptExpression",
+    array,
+    index,
+    type: array.type.baseType,
+  }
+}
+
+export function memberExpression(object, op, field) {
+  return { kind: "MemberExpression", object, op, field, type: field.type }
 }
 
 export const breakStatement = { kind: "BreakStatement" }
