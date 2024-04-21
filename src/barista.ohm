@@ -11,7 +11,6 @@ Barista {
                | IfStmt
                | ForStmt
                | WhileStmt
-               | CallStmt
                | BreakStmt
                | PrintStmt
                | ReturnStmt
@@ -28,9 +27,8 @@ Barista {
     Block = "{" Statement* "}"
 
     Type = "[" Type "]"                         -- array
-          | "{" Type "}"                        -- dictionary
           | Type "?"                            -- optional
-          | "(" Params ")" "->" Type            -- function
+          | "(" ListOf<Type, ","> ")" "->" Type  -- function
           | id                                  -- id
 
     Assignment = id "=" Exp
@@ -41,7 +39,6 @@ Barista {
            | brew Exp Block                     -- plain_if
     ForStmt = ristretto id espresso Exp Block
     WhileStmt = blend Exp Block
-    Call = id "(" ListOf<Exp, ","> ")"
     BreakStmt = tamp
     PrintStmt = remake Exp
     ReturnStmt = serve Exp
@@ -63,8 +60,9 @@ Barista {
             | ("-" | not) Primary        	      -- unary
     Primary = "(" Exp ")"                       -- params
             | "[" NonemptyListOf<Exp, ","> "]"  -- array
-            | ~num Primary "[" Exp "]"          -- subscript
-            | Primary "."  id                   -- member
+            | Primary "[" Exp "]"               -- subscript
+            | Primary "." id                    -- member
+            | Primary "(" ListOf<Exp, ","> ")"  -- call
             | true
             | false
             | string

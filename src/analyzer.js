@@ -239,16 +239,12 @@ export default function analyze(match) {
       const fun = core.fun(id.sourceString)
       mustNotAlreadyBeDeclared(id.sourceString, { at: id })
       context.add(id.sourceString, fun)
-
       context = context.newChildContext({ inLoop: false, function: fun })
       const params = parameters.rep()
-
       const paramTypes = params.map((param) => param.type)
       const returnType = type.children?.[0]?.rep() ?? VOID
       fun.type = core.functionType(paramTypes, returnType)
-
       const body = block.rep()
-
       context = context.parent
       return core.functionDeclaration(fun, params, body)
     },
@@ -285,7 +281,6 @@ export default function analyze(match) {
     Type_array(_left, baseType, _right) {
       return core.arrayType(baseType.rep())
     },
-    Type_dictionary() {},
     Type_optional(baseType, _questionMark) {
       return core.optionalType(baseType.rep())
     },
@@ -360,8 +355,6 @@ export default function analyze(match) {
     WhileStmt(_while, exp, block) {
       return core.whileStatement(exp.rep(), block.rep())
     },
-
-    Call() {},
     BreakStmt(_break) {
       mustBeInLoop({ at: _break })
       return core.breakStatement()
@@ -463,19 +456,34 @@ export default function analyze(match) {
       mustHaveIntegerType(subscript, { at: exp2 })
       return core.subscript(array, subscript)
     },
-    Primary_member() {
-      const object = exp.rep()
-      let structType
-      if (dot.sourceString === "?.") {
-        mustHaveAnOptionalStructType(object, { at: exp })
-        structType = object.type.baseType
-      } else {
-        mustHaveAStructType(object, { at: exp })
-        structType = object.type
-      }
-      mustHaveMember(structType, id.sourceString, { at: id })
-      const field = structType.fields.find((f) => f.name === id.sourceString)
-      return core.memberExpression(object, dot.sourceString, field)
+    // Primary_member(exp, dot, id) {
+    //   const object = exp.rep()
+    //   let structType
+    //   if (dot.sourceString === ".") {
+    //     mustHaveAnOptionalStructType(object, { at: exp })
+    //     structType = object.type.baseType
+    //   } else {
+    //     mustHaveAStructType(object, { at: exp })
+    //     structType = object.type
+    //   }
+    //   mustHaveMember(structType, id.sourceString, { at: id })
+    //   const field = structType.fields.find((f) => f.name === id.sourceString)
+    //   return core.memberExpression(object, dot.sourceString, field)
+    // },
+    Primary_call(exp, open, expList, _close) {
+      const callee = exp.rep()
+      mustBeCallable(callee, { at: exp })
+      const exps = expList.asIteration().children
+      const targetTypes = callee.type.paramTypes
+      mustHaveCorrectArgumentCount(exps.length, targetTypes.length, {
+        at: open,
+      })
+      const args = exps.map((exp, i) => {
+        const arg = exp.rep()
+        mustBeAssignable(arg, { toType: targetTypes[i] }, { at: exp })
+        return arg
+      })
+      return core.call(callee, args)
     },
     Primary_id(id) {
       const entity = context.lookup(id.sourceString)
