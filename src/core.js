@@ -49,6 +49,10 @@ export function optionalType(baseType) {
   return { kind: "OptionalType", baseType }
 }
 
+export function printStatement(expression) {
+  return { kind: "PrintStatement", expression }
+}
+
 export function increment(variable) {
   return { kind: "Increment", variable }
 }
@@ -68,6 +72,18 @@ export function subscript(array, index) {
     index,
     type: array.type.baseType,
   }
+}
+
+export function arrayExpression(elements) {
+  return {
+    kind: "ArrayExpression",
+    elements,
+    type: arrayType(elements[0].type),
+  }
+}
+
+export function emptyArray(type) {
+  return { kind: "EmptyArray", type }
 }
 
 export function memberExpression(object, op, field) {

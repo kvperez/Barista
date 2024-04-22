@@ -7,7 +7,7 @@ const syntaxChecks = [
   ["end of program inside comment", "remake 0 // yay"],
   [
     "class declaration",
-    "order Car {hopper (roast name, pump year) {shot.name = name shot.year = year} item getYear() -> pump { serve shot.year}}",
+    "order Car {hopper (name: roast, year: pump) {shot.name = name shot.year = year} item getYear() -> pump {shot.year}",
   ],
   ["a new constructor", 'Car myCar = new Car("Ford", 2014)'],
   ["calling a constructor method", 'remake myCar.getYear() + "years old"'],

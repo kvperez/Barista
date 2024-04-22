@@ -177,8 +177,6 @@ export default function analyze(match) {
         return "none"
       case "AnyType":
         return "any"
-      case "StructType":
-        return type.name
       case "FunctionType":
         const paramTypes = type.paramTypes.map(typeDescription).join(", ")
         const returnType = typeDescription(type.returnType)
@@ -235,22 +233,40 @@ export default function analyze(match) {
     Program(statements) {
       return core.program(statements.children.map((s) => s.rep()))
     },
-    FuncDecl(_item, id, parameters, type, block) {
+    Statement_bump(exp, operator) {
+      const variable = exp.rep()
+      mustHaveIntegerType(variable, { at: exp })
+      return operator.sourceString === "++"
+        ? core.increment(variable)
+        : core.decrement(variable)
+    },
+    FuncDecl(_item, id, parameters, _arrow, type, block) {
       const fun = core.fun(id.sourceString)
       mustNotAlreadyBeDeclared(id.sourceString, { at: id })
       context.add(id.sourceString, fun)
       context = context.newChildContext({ inLoop: false, function: fun })
       const params = parameters.rep()
       const paramTypes = params.map((param) => param.type)
-      const returnType = type.children?.[0]?.rep() ?? VOID
+      const returnType = type.children?.[0]?.rep() ?? NONE
       fun.type = core.functionType(paramTypes, returnType)
       const body = block.rep()
       context = context.parent
       return core.functionDeclaration(fun, params, body)
     },
-    ClassDecl(_order, id, _open, constructor, fundecl, _close) {},
-    Constructor(_hopper, params, initconst) {},
-    InitConst(_shot, id, exp) {},
+    ClassDecl(_order, id, _open, field, fundecl, _close) {
+      const className = id.sourceString
+      mustNotAlreadyBeDeclared(className, id)
+      const type = core.classType(className, [], [])
+      context.add(className, type)
+      context = context.newChildContext({ inClass: true })
+      const fields = field.children.map((field) => field.rep())
+      const methods = fundecl.children.map((fundecl) => fundecl.rep())
+      context = context.parent
+      type.fields = fields
+      type.methods = methods
+      const classDeclaration = core.classDeclaration(className, type)
+      return classDeclaration
+    },
     VarDecl(modifier, id, _eq, exp) {
       const initializer = exp.rep()
       const readOnly = modifier.sourceString === "const"
@@ -266,7 +282,7 @@ export default function analyze(match) {
     Field(id, _colon, type) {
       return core.field(id.sourceString, type.rep())
     },
-    Params(paramList) {
+    Params(_open, paramList, _close) {
       return paramList.asIteration().children.map((p) => p.rep())
     },
     Param(id, _colon, type) {
@@ -283,11 +299,6 @@ export default function analyze(match) {
     },
     Type_optional(baseType, _questionMark) {
       return core.optionalType(baseType.rep())
-    },
-    Type_function(_left, types, _right, _arrow, type) {
-      const paramTypes = types.asIteration().children.map((t) => t.rep())
-      const returnType = type.rep()
-      return core.functionType(paramTypes, returnType)
     },
     Type_id(id) {
       const entity = context.lookup(id.sourceString)
@@ -360,7 +371,7 @@ export default function analyze(match) {
       return core.breakStatement()
     },
     PrintStmt(_print, exp) {
-      return core.PrintStatement(exp.rep())
+      return core.printStatement(exp.rep())
     },
     ReturnStmt(returnKeyword, exp) {
       mustBeInAFunction({ at: returnKeyword })
@@ -442,34 +453,6 @@ export default function analyze(match) {
       }
       return core.unary(op, operand, type)
     },
-    Primary_params(_open, expression, _close) {
-      return expression.rep()
-    },
-    Primary_array(_open, args, _close) {
-      const elements = args.asIteration().children.map((e) => e.rep())
-      mustAllHaveSameType(elements, { at: args })
-      return core.arrayExpression(elements)
-    },
-    Primary_subscript(exp1, _open, exp2, _close) {
-      const [array, subscript] = [exp1.rep(), exp2.rep()]
-      mustHaveAnArrayType(array, { at: exp1 })
-      mustHaveIntegerType(subscript, { at: exp2 })
-      return core.subscript(array, subscript)
-    },
-    // Primary_member(exp, dot, id) {
-    //   const object = exp.rep()
-    //   let structType
-    //   if (dot.sourceString === ".") {
-    //     mustHaveAnOptionalStructType(object, { at: exp })
-    //     structType = object.type.baseType
-    //   } else {
-    //     mustHaveAStructType(object, { at: exp })
-    //     structType = object.type
-    //   }
-    //   mustHaveMember(structType, id.sourceString, { at: id })
-    //   const field = structType.fields.find((f) => f.name === id.sourceString)
-    //   return core.memberExpression(object, dot.sourceString, field)
-    // },
     Primary_call(exp, open, expList, _close) {
       const callee = exp.rep()
       mustBeCallable(callee, { at: exp })
@@ -485,6 +468,39 @@ export default function analyze(match) {
       })
       return core.call(callee, args)
     },
+    Primary_subscript(exp1, _open, exp2, _close) {
+      const [array, subscript] = [exp1.rep(), exp2.rep()]
+      mustHaveAnArrayType(array, { at: exp1 })
+      mustHaveIntegerType(subscript, { at: exp2 })
+      return core.subscript(array, subscript)
+    },
+    Primary_member(exp, dot, id) {
+      const object = exp.rep()
+      let structType
+      if (dot.sourceString === "?.") {
+        mustHaveAnOptionalStructType(object, { at: exp })
+        structType = object.type.baseType
+      } else {
+        mustHaveAStructType(object, { at: exp })
+        structType = object.type
+      }
+      mustHaveMember(structType, id.sourceString, { at: id })
+      const field = structType.fields.find((f) => f.name === id.sourceString)
+      return core.memberExpression(object, dot.sourceString, field)
+    },
+    Primary_emptyarray(ty, _open, _close) {
+      const type = ty.rep()
+      mustBeAnArrayType(type, { at: ty })
+      return core.emptyArray(type)
+    },
+    Primary_arrayexp(_open, args, _close) {
+      const elements = args.asIteration().children.map((e) => e.rep())
+      mustAllHaveSameType(elements, { at: args })
+      return core.arrayExpression(elements)
+    },
+    Primary_parens(_open, expression, _close) {
+      return expression.rep()
+    },
     Primary_id(id) {
       const entity = context.lookup(id.sourceString)
       mustHaveBeenFound(entity, id.sourceString, { at: id })
@@ -496,10 +512,13 @@ export default function analyze(match) {
     false(_) {
       return false
     },
+    int(_digits) {
+      return BigInt(this.sourceString)
+    },
     string(_openQuote, _chars, _closeQuote) {
       return this.sourceString
     },
-    num(_main, _dot, _fract, _e, _sign, _exp) {
+    num(_whole, _point, _fraction, _e, _sign, _exponent) {
       return Number(this.sourceString)
     },
   })

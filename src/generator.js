@@ -1,4 +1,4 @@
-import { voidType, standardLibrary } from "./core.js"
+import { noneType, standardLibrary } from "./core.js"
 
 export default function generate(program) {
   const output = []
@@ -133,7 +133,7 @@ export default function generate(program) {
         ? standardFunctions.get(c.callee)(c.args.map(gen))
         : `${gen(c.callee)}(${c.args.map(gen).join(", ")})`
       // Calls in expressions vs in statements are handled differently
-      if (c.callee.type.returnType !== voidType) {
+      if (c.callee.type.returnType !== noneType) {
         return targetCode
       }
       output.push(`${targetCode};`)

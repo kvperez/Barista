@@ -6,15 +6,15 @@ import analyze from "../src/analyzer.js"
 const semanticChecks = [
   ["variable declarations", 'const x = 1 let y = "false"'],
   ["increment and decrement", "let x = 10 x-- x++"],
-  ["initialize with empty array", "let a = [pump]()"],
+  ["initialize with empty array", "let a = []()"],
   ["assign arrays", "let a = [pump]() let b=[1] a=b b=a"],
   ["assign to array element", "const a = [1,2,3] a[1]=100"],
-  ["return", "item f() { return 0 }"],
-  ["return in nested if", "item f() {brew true {return }}"],
+  ["return", "item f() -> none { serve 0 }"],
+  ["return in nested if", "item f() -> none {brew true {serve 0 }}"],
   ["break in nested if", "blend false {brew true {tamp}}"],
   ["long if", "brew true {remake 1} pull { remake 3}"],
   ["elsif", "brew true {remake 1} pull brew true {remake 1} pull {remake 3}"],
-  ["for in range", "ristretto 1 espresso 1 { remake 0}"],
+  ["for in range", "ristretto a espresso 1 { remake 0}"],
   ["conditionals with ints", "remake true ? 8 : 5"],
   ["conditionals with floats", "remake 1<2 ? 8.0 : -5.22"],
   ["conditionals with strings", 'remake 1<2 ? "x" : "y"'],
@@ -143,7 +143,7 @@ const semanticErrors = [
   // ],
   [
     "function type mismatch",
-    `item f(x: pump, y: (boolean)->none) -> pump { serve 1 }
+    `item f(x: pump, y: (boolean) -> pump { serve 1 }
      function g(z: boolean) -> pump { serve 5 }
      f(2, g)`,
     /Cannot assign a \(boolean\)->int to a \(boolean\)->void/,

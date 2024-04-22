@@ -1,10 +1,8 @@
 order Car {
-    hopper (name: roast, year: pump) {
-        shot.name = name
-        shot.year = year
-    }
+    roast: name
+    pump: year
 
-    item getYear() -> pump {
-        shot.year
+    item carMaker(x: pump, y: roast) -> none {
+        remake "Car"
     }
 }
