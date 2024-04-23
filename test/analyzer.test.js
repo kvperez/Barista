@@ -5,7 +5,7 @@ import analyze from "../src/analyzer.js"
 // Programs that are semantically correct
 const semanticChecks = [
   ["variable declarations", 'const x = 1 let y = "false"'],
-  ["variable assignments", "x = 10"],
+  ["variable assignments", "let x = 2  x = 10"],
   ["increment and decrement", "let x = 10 x-- x++"],
   ["initialize with empty array", "let a = [pump]()"],
   ["assign arrays", "let a = [1]"],
