@@ -48,18 +48,18 @@ const semanticChecks = [
 
 // Programs that are syntactically correct but have semantic errors
 const semanticErrors = [
-  ["non-int increment", "let x=false x++", /an integer/],
-  ["non-int decrement", "let x=false x--", /an integer/],
-  ["undeclared id", "remake x", /Identifier x not declared/],
-  ["redeclared id", "let x = 1 let x = 1", /Identifier x already declared/],
+  ["non-int increment", "let x=false x++", /Expected an pump/],
+  ["non-int decrement", "let x=false x--", /Expected an pump/],
+  ["undeclared id", "remake x", /Ingredient x not declared/],
+  ["redeclared id", "let x = 1 let x = 1", /Ingredient x already declared/],
   ["assign to const", "const x = 1 x = 2", /Cannot assign to constant/],
-  ["assign bad type", "let x=1 x=true", /Cannot assign a boolean to a int/],
+  ["assign bad type", "let x=1 x=true", /Cannot assign a boolean to a pump/],
   [
     "assign bad array type",
     "let x=1 x=[true]",
-    /Cannot assign a \[boolean\] to a int/,
+    /Cannot assign a \[boolean\] to a pump/,
   ],
-  ["break outside loop", "tamp", /Tamp can only appear in a loop/],
+  ["break outside loop", "tamp", /Tamp can only appear in a blend/],
   [
     "break inside function",
     "blend true {item f() -> none {tamp}}",
