@@ -35,11 +35,10 @@ export function arrayType(baseType) {
 }
 
 export const boolType = { kind: "BoolType" }
-export const intType = { kind: "IntType" }
-export const floatType = { kind: "FloatType" }
-export const stringType = { kind: "StringType" }
+export const pumpType = { kind: "PumpType" }
+export const affogatoType = { kind: "AffogatoType" }
+export const roastType = { kind: "RoastType" }
 export const noneType = { kind: "NoneType" }
-export const anyType = { kind: "AnyType" }
 
 export function functionType(paramTypes, returnType) {
   return { kind: "FunctionType", paramTypes, returnType }
@@ -137,14 +136,13 @@ export function unary(op, operand, type) {
 }
 
 export const standardLibrary = Object.freeze({
-  int: intType,
-  float: floatType,
+  pump: pumpType,
+  affogato: affogatoType,
   boolean: boolType,
-  string: stringType,
+  roast: roastType,
   none: noneType,
-  any: anyType,
 })
 
-String.prototype.type = stringType
-Number.prototype.type = floatType
+String.prototype.type = roastType
+Number.prototype.type = affogatoType
 Boolean.prototype.type = boolType

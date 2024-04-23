@@ -38,9 +38,9 @@ Barista {
 
     Exp = Exp0 "?" Exp0 ":" Exp                 -- conditional
           | Exp0
-    Exp0 = Exp0 (or) Exp                        -- or
+    Exp0 = Exp0 (or Exp)+                       -- or
           | Exp1
-    Exp1 = Exp1 (and) Exp2                      -- and
+    Exp1 = Exp1 (and Exp2)+                     -- and
           | Exp2
     Exp2 = Exp3 relop Exp3                      -- relop
           | Exp3
@@ -50,19 +50,18 @@ Barista {
           | Factor
     Factor = Primary "**" Factor                -- power
             | Primary
-            | ("-" | not) Primary        	      -- unary
+            | ( "-" | not) Primary       	            -- unary
     Primary = Primary ("(" | "?(") ListOf<Exp, ","> ")" ~mut     -- call
-            | Primary ("[" | "?[") Exp "]"                     -- subscript
-            | Primary ("." | "?.") id                          -- member
-            | Type_array "(" ")" ~mut                       -- emptyarray
-            | "[" NonemptyListOf<Exp, ","> "]" ~mut         -- arrayexp
-            | "(" Exp ")" ~mut                              -- parens
-            | int ~mut
+            | Primary ("[" | "?[") Exp "]"                       -- subscript
+            | Primary ("." | "?.") id                            -- member
+            | Type_array "(" ")" ~mut                            -- emptyarray
+            | "[" NonemptyListOf<Exp, ","> "]" ~mut              -- arrayexp
+            | "(" Exp ")" ~mut                                   -- parens
             | string ~mut
             | true ~mut
             | false ~mut
-            | id                                            -- id
-            | num
+            | id                                                 -- id
+            | num ~mut
 
     relop = "<=" | "<" | "==" | "!=" | ">=" | ">"
     mut   = ~"==" "=" | "++" | "--"
@@ -100,8 +99,7 @@ Barista {
     id = ~keyword letter idchar*
     idchar = alnum | "_" | letter
 
-    int = digit+
-    num = digit+ "." digit+ (("E" | "e") ("+" | "-")? digit+)?
+    num = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
     space += "//" (~"\n" any)*                  -- comment
 
 }

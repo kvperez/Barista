@@ -1,10 +1,9 @@
 import * as core from "./core.js"
 
-const INT = core.intType
-const FLOAT = core.floatType
-const STRING = core.stringType
+const PUMP = core.pumpType
+const AFFOGATO = core.affogatoType
+const ROAST = core.roastType
 const BOOLEAN = core.boolType
-const ANY = core.anyType
 const NONE = core.noneType
 
 class Context {
@@ -56,7 +55,7 @@ export default function analyze(match) {
 
   function mustHaveNumericType(e, at) {
     must(
-      [INT, FLOAT].includes(e.type),
+      [PUMP, AFFOGATO].includes(e.type),
       "Expected a pump amount, I need it at the window now",
       at
     )
@@ -64,7 +63,7 @@ export default function analyze(match) {
 
   function mustHaveNumericOrStringType(e, at) {
     must(
-      [INT, FLOAT, STRING].includes(e.type),
+      [PUMP, AFFOGATO, ROAST].includes(e.type),
       "Expected a pump amount or roast name, I need it at the window now",
       at
     )
@@ -80,7 +79,7 @@ export default function analyze(match) {
 
   function mustHaveIntegerType(e, at) {
     must(
-      e.type === INT,
+      e.type === PUMP,
       "Expected an pump amount, I need it at the window now",
       at
     )
@@ -90,14 +89,6 @@ export default function analyze(match) {
     must(
       e.type?.kind === "ArrayType",
       "Expected an array, I need it at the window now",
-      at
-    )
-  }
-
-  function mustHaveAnOptionalType(e, at) {
-    must(
-      e.type?.kind === "OptionalType",
-      "Expected an optional, I need it at the window now",
       at
     )
   }
@@ -151,8 +142,7 @@ export default function analyze(match) {
 
   function assignable(fromType, toType) {
     return (
-      toType == ANY ||
-      equivalent(fromType, toType) ||
+      toType == equivalent(fromType, toType) ||
       (fromType?.kind === "FunctionType" &&
         toType?.kind === "FunctionType" &&
         assignable(fromType.returnType, toType.returnType) &&
@@ -165,18 +155,16 @@ export default function analyze(match) {
 
   function typeDescription(type) {
     switch (type.kind) {
-      case "IntType":
-        return "int"
-      case "FloatType":
-        return "float"
-      case "StringType":
-        return "string"
+      case "PumpType":
+        return "pump"
+      case "AffogatoType":
+        return "affogato"
+      case "RoastType":
+        return "roast"
       case "BoolType":
         return "boolean"
       case "NoneType":
         return "none"
-      case "AnyType":
-        return "any"
       case "FunctionType":
         const paramTypes = type.paramTypes.map(typeDescription).join(", ")
         const returnType = typeDescription(type.returnType)
@@ -306,20 +294,12 @@ export default function analyze(match) {
       mustBeAType(entity, { at: id })
       return entity
     },
-    Assignment(id, _eq, experssion) {
-      return core.assignment(id.sourceString, experssion.rep())
-    },
-    VarDecl(modifier, id, _eq, exp) {
-      const initializer = exp.rep()
-      const readOnly = modifier.sourceString === "const"
-      const variable = core.variable(
-        id.sourceString,
-        readOnly,
-        initializer.type
-      )
-      mustNotAlreadyBeDeclared(id.sourceString, { at: id })
-      context.add(id.sourceString, variable)
-      return core.variableDeclaration(variable, initializer)
+    Assignment(variable, _eq, expression) {
+      const source = expression.rep()
+      const target = variable.rep()
+      mustBeAssignable(source, { toType: target.type }, { at: variable })
+      mustNotBeReadOnly(target, { at: variable })
+      return core.assignment(target, source)
     },
     IfStmt_with_else(_brew, exp, block1, _pull, block2) {
       const test = exp.rep()
@@ -363,19 +343,24 @@ export default function analyze(match) {
       context = context.parent
       return core.forStatement(iterator, collection, body)
     },
-    WhileStmt(_while, exp, block) {
-      return core.whileStatement(exp.rep(), block.rep())
+    WhileStmt(_blend, exp, block) {
+      const test = exp.rep()
+      mustHaveBooleanType(test, { at: exp })
+      context = context.newChildContext({ inLoop: true })
+      const body = block.rep()
+      context = context.parent
+      return core.whileStatement(test, body)
     },
-    BreakStmt(_break) {
-      mustBeInLoop({ at: _break })
+    BreakStmt(_tamp) {
+      mustBeInLoop({ at: _tamp })
       return core.breakStatement()
     },
-    PrintStmt(_print, exp) {
+    PrintStmt(_remake, exp) {
       return core.printStatement(exp.rep())
     },
-    ReturnStmt(returnKeyword, exp) {
-      mustBeInAFunction({ at: returnKeyword })
-      mustReturnSomething(context.function, { at: returnKeyword })
+    ReturnStmt(_serve, exp) {
+      mustBeInAFunction({ at: _serve })
+      mustReturnSomething(context.function, { at: _serve })
       const returnExpression = exp.rep()
       mustBeReturnable(
         returnExpression,
@@ -511,9 +496,6 @@ export default function analyze(match) {
     },
     false(_) {
       return false
-    },
-    int(_digits) {
-      return BigInt(this.sourceString)
     },
     string(_openQuote, _chars, _closeQuote) {
       return this.sourceString
