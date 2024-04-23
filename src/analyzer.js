@@ -1,7 +1,7 @@
 import * as core from "./core.js"
 
 const PUMP = core.pumpType
-const AFFOGATO = core.affogatoType
+// const AFFOGATO = core.affogatoType
 const ROAST = core.roastType
 const BOOLEAN = core.boolType
 const NONE = core.noneType
@@ -55,7 +55,7 @@ export default function analyze(match) {
 
   function mustHaveNumericType(e, at) {
     must(
-      [PUMP, AFFOGATO].includes(e.type),
+      [PUMP].includes(e.type),
       "Expected a pump amount, I need it at the window now",
       at
     )
@@ -63,7 +63,7 @@ export default function analyze(match) {
 
   function mustHaveNumericOrStringType(e, at) {
     must(
-      [PUMP, AFFOGATO, ROAST].includes(e.type),
+      [PUMP, ROAST].includes(e.type),
       "Expected a pump amount or roast name, I need it at the window now",
       at
     )
@@ -157,8 +157,8 @@ export default function analyze(match) {
     switch (type.kind) {
       case "PumpType":
         return "pump"
-      case "AffogatoType":
-        return "affogato"
+      // case "AffogatoType":
+      //   return "affogato"
       case "RoastType":
         return "roast"
       case "BoolType":
@@ -327,7 +327,7 @@ export default function analyze(match) {
       context = context.newChildContext()
       const consequent = block.rep()
       context = context.parent
-      return core.shortIfStatement(test, consequent)
+      return core.elseIfStatement(test, consequent)
     },
     ForStmt(_ristretto, id, _espresso, exp, block) {
       const collection = exp.rep()
@@ -353,7 +353,7 @@ export default function analyze(match) {
     },
     BreakStmt(_tamp) {
       mustBeInLoop({ at: _tamp })
-      return core.breakStatement()
+      return core.breakStatement
     },
     PrintStmt(_remake, exp) {
       return core.printStatement(exp.rep())

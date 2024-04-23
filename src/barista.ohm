@@ -50,7 +50,7 @@ Barista {
           | Factor
     Factor = Primary "**" Factor                -- power
             | Primary
-            | ( "-" | not) Primary       	            -- unary
+            | ( "-" | not) Primary       	           -- unary
     Primary = Primary ("(" | "?(") ListOf<Exp, ","> ")" ~mut     -- call
             | Primary ("[" | "?[") Exp "]"                       -- subscript
             | Primary ("." | "?.") id                            -- member

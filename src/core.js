@@ -36,7 +36,7 @@ export function arrayType(baseType) {
 
 export const boolType = { kind: "BoolType" }
 export const pumpType = { kind: "PumpType" }
-export const affogatoType = { kind: "AffogatoType" }
+// export const affogatoType = { kind: "AffogatoType" }
 export const roastType = { kind: "RoastType" }
 export const noneType = { kind: "NoneType" }
 
@@ -111,10 +111,6 @@ export function elseIfStatement(test, consequent) {
   return { kind: "elseIfStatement", test, consequent }
 }
 
-export function elseStatement(consequent) {
-  return { kind: "elseStatement", consequent }
-}
-
 export function whileStatement(test, body) {
   return { kind: "WhileStatement", test, body }
 }
@@ -137,12 +133,11 @@ export function unary(op, operand, type) {
 
 export const standardLibrary = Object.freeze({
   pump: pumpType,
-  affogato: affogatoType,
   boolean: boolType,
   roast: roastType,
   none: noneType,
 })
 
 String.prototype.type = roastType
-Number.prototype.type = affogatoType
+Number.prototype.type = pumpType
 Boolean.prototype.type = boolType

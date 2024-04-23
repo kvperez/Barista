@@ -26,8 +26,8 @@ const semanticChecks = [
   ["arithmetic", "let x=1 remake 2*3+5**-3/2-5%8"],
   // ["variables", "let x=[[[[1]]]]; print(x[0][0][0][0]+2);"],
   // ["subscript exp", "let a=[1,2];print(a[0]);"],
-  ["assigned functions", "item f() {}\nlet g = f g = f"],
-  ["call of assigned functions", "item f(x: pump) {}\nlet g=f g(1)"],
+  ["assigned functions", "item f() -> none {}\nlet g = f g = f"],
+  ["call of assigned functions", "item f(x: pump) -> none {}\nlet g=f g(1)"],
   // [
   //   "type equivalence of nested arrays",
   //   "function f(x: [[pump]]) {} remake f([[1],[2]])",
@@ -40,8 +40,8 @@ const semanticChecks = [
     f = g // Type check here`,
   ],
   ["function return types", `item square(x: pump) -> pump { serve x * x }`],
-  ["array parameters", "item f(x: [pump?]) {}"],
-  ["optional parameters", "item f(x: [pump], y: roast?) {}"],
+  ["array parameters", "item f(x: [pump?]) -> none {}"],
+  ["optional parameters", "item f(x: [pump], y: roast?) -> none {}"],
   ["outer variable", "let x=1 blend false {remake 1}"],
 ]
 
