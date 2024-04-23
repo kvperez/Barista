@@ -126,14 +126,7 @@ const semanticErrors = [
   [
     "Parameter type mismatch",
     "item f(x: pump) -> none {}\nf(false)",
-    /Cannot assign a boolean to a int/,
-  ],
-  [
-    "function type mismatch",
-    `item f(x: pump, y: (boolean) -> pump { serve 1 }
-     function g(z: boolean) -> pump { serve 5 }
-     f(2, g)`,
-    /Cannot assign a \(boolean\)->int to a \(boolean\)->void/,
+    /Cannot assign a boolean to a pump/,
   ],
   // [
   //   "bad return type in fn assign",

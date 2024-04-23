@@ -6,13 +6,14 @@ Barista {
                | ClassDecl
                | VarDecl
                | Primary ("++" | "--")               -- bump
+               | Assignment
+               | Primary_call
                | IfStmt
                | ForStmt
                | WhileStmt
                | BreakStmt
                | PrintStmt
                | ReturnStmt
-               | Assignment
 
     FuncDecl = item id Params "->" Type Block
     ClassDecl = order id "{" Field* FuncDecl* "}"
