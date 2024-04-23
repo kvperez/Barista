@@ -245,12 +245,11 @@ export default function analyze(match) {
       context.add(className, type)
       context = context.newChildContext({ inClass: true })
       const fields = field.children.map((field) => field.rep())
-      const methods = fundecl.children.map((fundecl) => fundecl.rep())
+      const fundecls = fundecl.children.map((fundecl) => fundecl.rep())
       context = context.parent
       type.fields = fields
-      type.methods = methods
-      const classDeclaration = core.classDeclaration(className, type)
-      return classDeclaration
+      type.fundecls = fundecls
+      return core.classDeclaration(className, type)
     },
     VarDecl(modifier, id, _eq, exp) {
       const initializer = exp.rep()

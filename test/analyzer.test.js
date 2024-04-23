@@ -50,7 +50,7 @@ const semanticChecks = [
 const semanticErrors = [
   ["non-int increment", "let x=false x++", /an integer/],
   ["non-int decrement", "let x=false x--", /an integer/],
-  ["undeclared id", "remake x;", /Identifier x not declared/],
+  ["undeclared id", "remake x", /Identifier x not declared/],
   ["redeclared id", "let x = 1 let x = 1", /Identifier x already declared/],
   ["assign to const", "const x = 1 x = 2", /Cannot assign to constant/],
   ["assign bad type", "let x=1 x=true", /Cannot assign a boolean to a int/],
@@ -142,18 +142,9 @@ const semanticErrors = [
     /Cannot assign a \(boolean\)->int to a \(boolean\)->void/,
   ],
   // [
-  //   "bad param type in fn assign",
-  //   "function f(x: int) {} function g(y: float) {} f = g;",
-  // ],
-  // [
   //   "bad return type in fn assign",
   //   'function f(x: int): int {return 1;} function g(y: int): string {return "uh-oh";} f = g;',
   //   /Cannot assign a \(int\)->string to a \(int\)->int/,
-  // ],
-  // [
-  //   "bad call to sin()",
-  //   "print(sin(true));",
-  //   /Cannot assign a boolean to a float/,
   // ],
   // ["Non-type in param", "let x=1;function f(y:x){}", /Type expected/],
   // [
@@ -161,7 +152,6 @@ const semanticErrors = [
   //   "let x=1;function f():x{return 1;}",
   //   /Type expected/,
   // ],
-  // ["Non-type in field type", "let x=1;struct S {y:x}", /Type expected/],
 ]
 
 describe("The analyzer", () => {
