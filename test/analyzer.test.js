@@ -100,7 +100,7 @@ const semanticErrors = [
   ["bad types for >=", "remake false>=1", /Expected a number or string/],
   ["bad types for ==", "remake 2==2.0", /not have the same type/],
   ["bad types for !=", "remake false!=1", /not have the same type/],
-  ["bad types for negation", "remake -true;", /Expected a number/],
+  ["bad types for negation", "remake -true", /Expected a number/],
   ["non-integer index", "let a=[1] remake a[false]", /Expected an integer/],
   [
     "diff type array elements",
@@ -109,10 +109,10 @@ const semanticErrors = [
   ],
   [
     "shadowing",
-    "let x = 1;\nblend true {let x = 1}",
+    "let x = 1\nblend true {let x = 1}",
     /Identifier x already declared/,
   ],
-  ["call of uncallable", "let x = 1;\nremake x()", /Call of non-function/],
+  ["call of uncallable", "let x = 1\nremake x()", /Call of non-function/],
   [
     "too many args",
     "item f(x: pump) -> none {}\nf(1,2)",
@@ -125,7 +125,7 @@ const semanticErrors = [
   ],
   [
     "Parameter type mismatch",
-    "item f(x: pump) -> none {}\nf(false);",
+    "item f(x: pump) -> none {}\nf(false)",
     /Cannot assign a boolean to a int/,
   ],
   [
