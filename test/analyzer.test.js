@@ -81,20 +81,14 @@ const semanticErrors = [
   ["non-boolean while test", "blend 1 {}", /Expected a boolean/],
   ["non-array in for", "ristretto i espresso 100 {}", /Expected an array/],
   ["non-boolean conditional test", "remake 1?2:3", /Expected a boolean/],
-
-  // ["unwrap non-optional", "print(1??2);", /Expected an optional/],
-  // ["bad types for ||", "print(false||1);", /Expected a boolean/],
-  // ["bad types for &&", "print(false&&1);", /Expected a boolean/],
-  // [
-  //   "bad types for ==",
-  //   "print(false==1);",
-  //   /Operands do not have the same type/,
-  // ],
-  // [
-  //   "bad types for !=",
-  //   "print(false==1);",
-  //   /Operands do not have the same type/,
-  // ],
+  ["bad types for or", "remake false or 1", /Expected a boolean/],
+  ["bad types for and", "remake false and 1", /Expected a boolean/],
+  ["bad types for ==", "remake false==1", /Operands do not have the same type/],
+  [
+    "bad types for !=",
+    "remake false==1 ",
+    /Operands do not have the same type/,
+  ],
   ["bad types for +", "remake false+1", /Expected a number or string/],
   ["bad types for -", "remake false-1", /Expected a number/],
   ["bad types for *", "remake false*1", /Expected a number/],

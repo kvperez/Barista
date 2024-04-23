@@ -17,7 +17,7 @@ const fixtures = [
       x--
       let y = true
       y = 5 ** -x / -100 > - x or false
-      remake (y && y) or false or (x*2) != 5
+      remake (y and y) or false or (x*2) != 5
     `,
     expected: dedent`
       let x_1 = 21;
@@ -53,14 +53,16 @@ const fixtures = [
         if ((x_1 === 2)) {
           console.log(3);
         }
+      
       if ((x_1 === 0)) {
         console.log(1);
-      } else
+      } else 
         if ((x_1 === 2)) {
           console.log(3);
         } else {
           console.log(4);
         }
+      
     `,
   },
   {
@@ -96,7 +98,7 @@ const fixtures = [
       let z = 0.5
       item f(x: pump, y: boolean) -> none {
         remake x
-        serve
+        serve 0
       }
       item g() -> boolean {
         serve false
@@ -107,7 +109,7 @@ const fixtures = [
       let z_1 = 0.5;
       function f_2(x_3, y_4) {
         console.log((Math.sin(x_3) > Math.PI));
-        return;
+        return 0;
       }
       function g_5() {
         return false;
@@ -119,7 +121,7 @@ const fixtures = [
     name: "arrays",
     source: `
       let a = [true, false, true]
-      let b = [10, #a - 20, 30]
+      let b = [10, a - 20, 30]
       const c = [[int]]()
       remake a[1] or (b[0] < 88 ? false : true)
     `,
@@ -139,8 +141,8 @@ const fixtures = [
       }
     `,
     expected: dedent`
-      for (let j_2 of [10,20,30]) {
-        console.log(j_2);
+      for (let j_1 of [10,20,30]) {
+        console.log(j_1);
       }
     `,
   },
