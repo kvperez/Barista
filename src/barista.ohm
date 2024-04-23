@@ -12,6 +12,7 @@ Barista {
                | BreakStmt
                | PrintStmt
                | ReturnStmt
+               | Assignment
 
     FuncDecl = item id Params "->" Type Block
     ClassDecl = order id "{" Field* FuncDecl* "}"

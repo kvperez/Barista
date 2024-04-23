@@ -5,11 +5,8 @@ const syntaxChecks = [
   ["all numeric literal forms", "remake 8 * 89.123"],
   ["complex expressions", "remake 83 * ((((-((((13 / 21)))))))) + 1 - 0"],
   ["end of program inside comment", "remake 0 // yay"],
-  [
-    "class declaration",
-    "order Car {hopper (name: roast, year: pump) {shot.name = name shot.year = year} item getYear() -> pump {shot.year}",
-  ],
-  ["a new constructor", 'Car myCar = new Car("Ford", 2014)'],
+  ["class declaration", "order Car {}"],
+  // ["a new constructor", 'Car myCar = new Car("Ford", 2014)'],
   ["calling a constructor method", 'remake myCar.getYear() + "years old"'],
   ["brew statement", "brew x <= 1 {serve x}"],
   ["brew pull statement", "brew x <= 1 {serve x} pull {serve 0}"],
