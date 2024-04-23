@@ -54,17 +54,13 @@ export default function analyze(match) {
   }
 
   function mustHaveNumericType(e, at) {
-    must(
-      e.type === PUMP,
-      "Expected a pump amount, I need it at the window now",
-      at
-    )
+    must(e.type === PUMP, "Expected a pump, I need it at the window now", at)
   }
 
   function mustHaveNumericOrStringType(e, at) {
     must(
       [PUMP, ROAST].includes(e.type),
-      "Expected a pump amount or roast name, I need it at the window now",
+      "Expected a pump or roast, I need it at the window now",
       at
     )
   }
@@ -78,11 +74,7 @@ export default function analyze(match) {
   }
 
   function mustHaveIntegerType(e, at) {
-    must(
-      e.type === PUMP,
-      "Expected an pump amount, I need it at the window now",
-      at
-    )
+    must(e.type === PUMP, "Expected a pump, I need it at the window now", at)
   }
 
   function mustHaveAnArrayType(e, at) {
@@ -193,7 +185,7 @@ export default function analyze(match) {
   }
 
   function mustBeInAFunction(at) {
-    must(context.function, "Serve can only appear in a item", at)
+    must(context.function, "Serve can only appear in an item", at)
   }
 
   function mustBeCallable(e, at) {
