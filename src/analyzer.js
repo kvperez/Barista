@@ -1,9 +1,9 @@
 import * as core from "./core.js"
 
 const PUMP = core.pumpType
-// const AFFOGATO = core.affogatoType
 const ROAST = core.roastType
 const BOOLEAN = core.boolType
+const ANY = core.anyType
 const NONE = core.noneType
 
 class Context {
@@ -55,7 +55,7 @@ export default function analyze(match) {
 
   function mustHaveNumericType(e, at) {
     must(
-      [PUMP].includes(e.type),
+      e.type === PUMP,
       "Expected a pump amount, I need it at the window now",
       at
     )
@@ -114,7 +114,7 @@ export default function analyze(match) {
   function mustBeAType(e, at) {
     must(
       e?.kind.endsWith("Type"),
-      "Type expected, you want a tall, grande, venti, or trenta",
+      "Type expected, did you want a tall, grande, venti, or trenta",
       at
     )
   }
@@ -142,7 +142,8 @@ export default function analyze(match) {
 
   function assignable(fromType, toType) {
     return (
-      toType == equivalent(fromType, toType) ||
+      toType == ANY ||
+      equivalent(fromType, toType) ||
       (fromType?.kind === "FunctionType" &&
         toType?.kind === "FunctionType" &&
         assignable(fromType.returnType, toType.returnType) &&
@@ -157,14 +158,14 @@ export default function analyze(match) {
     switch (type.kind) {
       case "PumpType":
         return "pump"
-      // case "AffogatoType":
-      //   return "affogato"
       case "RoastType":
         return "roast"
       case "BoolType":
         return "boolean"
       case "NoneType":
         return "none"
+      case "AnyType":
+        return "any"
       case "FunctionType":
         const paramTypes = type.paramTypes.map(typeDescription).join(", ")
         const returnType = typeDescription(type.returnType)
@@ -196,12 +197,8 @@ export default function analyze(match) {
   }
 
   function mustBeCallable(e, at) {
-    const callable = e?.kind === "StructType" || e.type?.kind === "FunctionType"
+    const callable = e.type?.kind === "FunctionType"
     must(callable, "Call of non-function or non-constructor", at)
-  }
-
-  function mustNotReturnAnything(f, at) {
-    must(f.type.returnType === NONE, "Something should be served", at)
   }
 
   function mustReturnSomething(f, at) {

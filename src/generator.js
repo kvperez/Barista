@@ -1,13 +1,7 @@
-import { noneType, standardLibrary } from "./core.js"
+import { noneType } from "./core.js"
 
 export default function generate(program) {
   const output = []
-
-  const standardFunctions = new Map([
-    [standardLibrary.print, (x) => `console.log(${x})`],
-    [standardLibrary.bytes, (s) => `[...Buffer.from(${s}, "utf8")]`],
-    [standardLibrary.codepoints, (s) => `[...(${s})].map(s=>s.codePointAt(0))`],
-  ])
 
   const targetName = ((mapping) => {
     return (entity) => {
@@ -27,14 +21,8 @@ export default function generate(program) {
     VariableDeclaration(d) {
       output.push(`let ${gen(d.variable)} = ${gen(d.initializer)};`)
     },
-    TypeDeclaration(d) {
-      output.push(`class ${gen(d.type)} {`)
-      output.push(`constructor(${d.type.fields.map(gen).join(",")}) {`)
-      for (let field of d.type.fields) {
-        output.push(`this[${JSON.stringify(gen(field))}] = ${gen(field)};`)
-      }
-      output.push("}")
-      output.push("}")
+    PrintStatement(p) {
+      output.push(`console.log(${gen(p.expression)});`)
     },
     Field(f) {
       return targetName(f)
@@ -66,19 +54,21 @@ export default function generate(program) {
       output.push(`return ${gen(s.expression)};`)
     },
     IfStatement(s) {
-      output.push(`if (${gen(s.test)})`)
-      gen(s.consequent)
-      s.alternates.forEach(gen)
-      gen(s?.tail)
+      output.push(`if (${gen(s.test)}) {`)
+      s.consequent.forEach(gen)
+      if (s.alternate?.kind?.endsWith?.("IfStatement")) {
+        output.push("} else")
+        gen(s.alternate)
+      } else {
+        output.push("} else {")
+        s.alternate.forEach(gen)
+        output.push("}")
+      }
     },
     ElseIfStatement(s) {
-      output.push(`else if (${gen(s.test)})`)
-      gen(s.consequent)
-    },
-    ElseStatement(s) {
-      console.log("ELSE", s)
-      output.push(`else`)
-      gen(s.consequent)
+      output.push(`if (${gen(s.test)}) {`)
+      s.consequent.forEach(gen)
+      output.push("}")
     },
     WhileStatement(s) {
       output.push(`while (${gen(s.test)}) {`)
@@ -99,17 +89,17 @@ export default function generate(program) {
       const op = { "==": "===", "!=": "!==" }[e.op] ?? e.op
       return `(${gen(e.left)} ${op} ${gen(e.right)})`
     },
-    UnaryExpression(e) {
-      const operand = gen(e.operand)
-      if (e.op === "some") {
-        return operand
-      } else if (e.op === "#") {
-        return `${operand}.length`
-      } else if (e.op === "random") {
-        return `((a=>a[~~(Math.random()*a.length)])(${operand}))`
-      }
-      return `${e.op}(${operand})`
-    },
+    // UnaryExpression(e) {
+    //   const operand = gen(e.operand)
+    //   if (e.op === "some") {
+    //     return operand
+    //   } else if (e.op === "#") {
+    //     return `${operand}.length`
+    //   } else if (e.op === "random") {
+    //     return `((a=>a[~~(Math.random()*a.length)])(${operand}))`
+    //   }
+    //   return `${e.op}(${operand})`
+    // },
     EmptyOptional(e) {
       return "undefined"
     },
