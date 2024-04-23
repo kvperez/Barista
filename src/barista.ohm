@@ -26,7 +26,7 @@ Barista {
           | Type "?"                            -- optional
           | id                                  -- id
 
-    Assignment = id "=" Exp
+    Assignment = Primary "=" Exp
     IfStmt = brew Exp Block pull Block          -- with_else
            | brew Exp Block pull IfStmt         -- nested_if
            | brew Exp Block                     -- plain_if

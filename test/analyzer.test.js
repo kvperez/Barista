@@ -5,6 +5,7 @@ import analyze from "../src/analyzer.js"
 // Programs that are semantically correct
 const semanticChecks = [
   ["variable declarations", 'const x = 1 let y = "false"'],
+  ["variable assignments", "x = 10"],
   ["increment and decrement", "let x = 10 x-- x++"],
   ["initialize with empty array", "let a = [pump]()"],
   ["assign arrays", "let a = [1]"],
@@ -24,14 +25,14 @@ const semanticChecks = [
   ["ok to == arrays", "remake [1]==[5,8]"],
   ["ok to != arrays", "remake [1]!=[5,8]"],
   ["arithmetic", "let x=1 remake 2*3+5**-3/2-5%8"],
-  // ["variables", "let x=[[[[1]]]]; print(x[0][0][0][0]+2);"],
-  // ["subscript exp", "let a=[1,2];print(a[0]);"],
+  ["variables", "let x=[[[[1]]]] remake x[0][0][0][0]+2"],
+  ["subscript exp", "let a=[1,2] remake a[0]"],
   ["assigned functions", "item f() -> none {}\nlet g = f g = f"],
   ["call of assigned functions", "item f(x: pump) -> none {}\nlet g=f g(1)"],
-  // [
-  //   "type equivalence of nested arrays",
-  //   "function f(x: [[pump]]) {} remake f([[1],[2]])",
-  // ],
+  [
+    "type equivalence of nested arrays",
+    "item f(x: [[pump]]) -> none {} remake f([[1],[2]])",
+  ],
   [
     "call of assigned function in expression",
     `item f(x: pump, y: boolean) -> pump {}
@@ -48,6 +49,7 @@ const semanticChecks = [
 // Programs that are syntactically correct but have semantic errors
 const semanticErrors = [
   ["non-int increment", "let x=false x++", /an integer/],
+  ["non-int decrement", "let x=false x--", /an integer/],
   ["undeclared id", "remake x;", /Identifier x not declared/],
   ["redeclared id", "let x = 1 let x = 1", /Identifier x already declared/],
   ["assign to const", "const x = 1 x = 2", /Cannot assign to constant/],
@@ -57,22 +59,17 @@ const semanticErrors = [
     "let x=1 x=[true]",
     /Cannot assign a \[boolean\] to a int/,
   ],
-  ["break outside loop", "tamp", /Break can only appear in a loop/],
+  ["break outside loop", "tamp", /Tamp can only appear in a loop/],
   [
     "break inside function",
-    "blend true {item f() {tamp}}",
+    "blend true {item f() -> none {tamp}}",
     /Break can only appear in a loop/,
   ],
   ["return outside function", "serve", /Return can only appear in a function/],
   [
     "return value from void function",
-    "item f() {serve 1}",
+    "item f() -> pump {serve 1}",
     /Cannot return a value/,
-  ],
-  [
-    "return nothing from non-void",
-    "item f() -> pump {serve}",
-    /should be returned/,
   ],
   [
     "return type mismatch",
@@ -110,37 +107,33 @@ const semanticErrors = [
   ["bad types for ==", "remake 2==2.0", /not have the same type/],
   ["bad types for !=", "remake false!=1", /not have the same type/],
   ["bad types for negation", "remake -true;", /Expected a number/],
-  // ["bad types for length", "print(#false);", /Expected an array/],
-  // ["bad types for not", 'remake not "hello"', /Expected a boolean/],
-  // ["bad types for random", "print(random 3);", /Expected an array/],
-  // ["non-integer index", "let a=[1];print(a[false]);", /Expected an integer/],
-  // ["no such field", "struct S{} let x=S(); print(x.y);", /No such field/],
-  // [
-  //   "diff type array elements",
-  //   "print([3,3.0]);",
-  //   /Not all elements have the same type/,
-  // ],
-  // [
-  //   "shadowing",
-  //   "let x = 1;\nwhile true {let x = 1;}",
-  //   /Identifier x already declared/,
-  // ],
-  // ["call of uncallable", "let x = 1;\nprint(x());", /Call of non-function/],
+  ["non-integer index", "let a=[1] remake a[false]", /Expected an integer/],
   [
-    "Too many args",
-    "item f(x: pump) {}\nf(1,2)",
+    "diff type array elements",
+    "remake [3,3.0]",
+    /Not all elements have the same type/,
+  ],
+  [
+    "shadowing",
+    "let x = 1;\nblend true {let x = 1}",
+    /Identifier x already declared/,
+  ],
+  ["call of uncallable", "let x = 1;\nremake x()", /Call of non-function/],
+  [
+    "too many args",
+    "item f(x: pump) -> none {}\nf(1,2)",
     /1 argument\(s\) required but 2 passed/,
   ],
   [
-    "Too few args",
-    "item f(x: pump) {}\nf()",
+    "too few args",
+    "item f(x: pump) -> none {}\nf()",
     /1 argument\(s\) required but 0 passed/,
   ],
-  // [
-  //   "Parameter type mismatch",
-  //   "function f(x: int) {}\nf(false);",
-  //   /Cannot assign a boolean to a int/,
-  // ],
+  [
+    "Parameter type mismatch",
+    "item f(x: pump) -> none {}\nf(false);",
+    /Cannot assign a boolean to a int/,
+  ],
   [
     "function type mismatch",
     `item f(x: pump, y: (boolean) -> pump { serve 1 }

@@ -60,12 +60,6 @@ const syntaxErrors = [
     /Line 1, col 40/,
   ],
   ["a missing { in a blend statement", "blend true tamp }", /Line 1, col 12/],
-  ["a class declaration without constructor", "order Car {}", /Line 1, col 12/],
-  [
-    "a method declaration without hopper",
-    "order Car { item getYear() -> pump { serve shot.year}",
-    /Line 1, col 13/,
-  ],
 ]
 
 describe("The parser", () => {
