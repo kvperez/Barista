@@ -230,19 +230,7 @@ export default function analyze(match) {
       context = context.parent
       return core.functionDeclaration(fun, params, body)
     },
-    ClassDecl(_order, id, _open, field, fundecl, _close) {
-      const className = id.sourceString
-      mustNotAlreadyBeDeclared(className, id)
-      const type = core.classType(className, [], [])
-      context.add(className, type)
-      context = context.newChildContext({ inClass: true })
-      const fields = field.children.map((field) => field.rep())
-      const fundecls = fundecl.children.map((fundecl) => fundecl.rep())
-      context = context.parent
-      type.fields = fields
-      type.fundecls = fundecls
-      return core.classDeclaration(className, type)
-    },
+    ClassDecl(_order, id, _open, field, fundecl, _close) {},
     VarDecl(modifier, id, _eq, exp) {
       const initializer = exp.rep()
       const readOnly = modifier.sourceString === "const"
@@ -315,7 +303,7 @@ export default function analyze(match) {
       context = context.newChildContext()
       const consequent = block.rep()
       context = context.parent
-      return core.elseIfStatement(test, consequent)
+      return core.shortIfStatement(test, consequent)
     },
     ForStmt(_ristretto, id, _espresso, exp, block) {
       const collection = exp.rep()

@@ -27,11 +27,17 @@ export default function generate(program) {
     Field(f) {
       return targetName(f)
     },
+    Block(b) {
+      output.push("{")
+      b.statements.forEach(gen)
+      output.push("}")
+    },
     FunctionDeclaration(d) {
       output.push(`function ${gen(d.fun)}(${d.params.map(gen).join(", ")}) {`)
       d.body.forEach(gen)
       output.push("}")
     },
+    ClassDeclaration(c) {},
     Variable(v) {
       return targetName(v)
     },
@@ -65,7 +71,7 @@ export default function generate(program) {
         output.push("}")
       }
     },
-    ElseIfStatement(s) {
+    shortIfStatement(s) {
       output.push(`if (${gen(s.test)}) {`)
       s.consequent.forEach(gen)
       output.push("}")
@@ -89,17 +95,6 @@ export default function generate(program) {
       const op = { "==": "===", "!=": "!==" }[e.op] ?? e.op
       return `(${gen(e.left)} ${op} ${gen(e.right)})`
     },
-    // UnaryExpression(e) {
-    //   const operand = gen(e.operand)
-    //   if (e.op === "some") {
-    //     return operand
-    //   } else if (e.op === "#") {
-    //     return `${operand}.length`
-    //   } else if (e.op === "random") {
-    //     return `((a=>a[~~(Math.random()*a.length)])(${operand}))`
-    //   }
-    //   return `${e.op}(${operand})`
-    // },
     EmptyOptional(e) {
       return "undefined"
     },
@@ -118,19 +113,9 @@ export default function generate(program) {
       const chain = e.op === "." ? "" : e.op
       return `(${object}${chain}[${field}])`
     },
-    FunctionCall(c) {
-      const targetCode = standardFunctions.has(c.callee)
-        ? standardFunctions.get(c.callee)(c.args.map(gen))
-        : `${gen(c.callee)}(${c.args.map(gen).join(", ")})`
-      // Calls in expressions vs in statements are handled differently
-      if (c.callee.type.returnType !== noneType) {
-        return targetCode
-      }
-      output.push(`${targetCode};`)
-    },
-    ConstructorCall(c) {
-      return `new ${gen(c.callee)}(${c.args.map(gen).join(", ")})`
-    },
+    // ConstructorCall(c) {
+    //   return `new ${gen(c.callee)}(${c.args.map(gen).join(", ")})`
+    // },
   }
 
   gen(program)

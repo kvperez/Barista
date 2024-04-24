@@ -1,9 +1,0 @@
-item while() -> none {
-    let x = 0
-    let y = 1
-
-    blend x < y {
-        remake "Less Than"
-        x++
-    }
-}

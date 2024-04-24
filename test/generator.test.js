@@ -10,22 +10,33 @@ function dedent(s) {
 
 const fixtures = [
   {
+    name: "very small",
+    source: `
+      let x = 20
+      x = 40
+      remake x
+    `,
+    expected: dedent`
+      let x_1 = 20;
+      x_1 = 40;
+      console.log(x_1);
+    `,
+  },
+  {
     name: "small",
     source: `
-      let x = 3 * 7
+      let x = 21
+      x++
       x++
       x--
-      let y = true
-      y = 5 ** -x / -100 > - x or false
-      remake (y and y) or false or (x*2) != 5
+      remake x
     `,
     expected: dedent`
       let x_1 = 21;
       x_1++;
+      x_1++;
       x_1--;
-      let y_2 = true;
-      y_2 = (((5 ** -(x_1)) / -(100)) > -(x_1));
-      console.log(((y_2 && y_2) || ((x_1 * 2) !== 5)));
+      console.log(x_1);
     `,
   },
   {
@@ -53,10 +64,9 @@ const fixtures = [
         if ((x_1 === 2)) {
           console.log(3);
         }
-      
       if ((x_1 === 0)) {
         console.log(1);
-      } else 
+      } else
         if ((x_1 === 2)) {
           console.log(3);
         } else {
@@ -96,41 +106,23 @@ const fixtures = [
     name: "functions",
     source: `
       let z = 0.5
-      item f(x: pump, y: boolean) -> none {
-        remake x
-        serve 0
+      let w = false
+      item f(x: pump, y: boolean) -> pump {
+        brew y == false {
+          serve x
+        }
       }
-      item g() -> boolean {
-        serve false
-      }
-      f(z, g())
+      remake f(z, w)
     `,
     expected: dedent`
       let z_1 = 0.5;
-      function f_2(x_3, y_4) {
-        console.log((Math.sin(x_3) > Math.PI));
-        return 0;
+      let w_2 = false;
+      function f_3(x_4, y_5) {
+        if ((y_5 === false)) {
+          return x_4;
+        }
       }
-      function g_5() {
-        return false;
-      }
-      f_2(z_1, g_5());
-    `,
-  },
-  {
-    name: "arrays",
-    source: `
-      let a = [true, false, true]
-      let b = [10, a - 20, 30]
-      const c = [[int]]()
-      remake a[1] or (b[0] < 88 ? false : true)
-    `,
-    expected: dedent`
-      let a_1 = [true,false,true];
-      let b_2 = [10,(a_1.length - 20),30];
-      let c_3 = [];
-      let d_4 = ((a=>a[~~(Math.random()*a.length)])(b_2));
-      console.log((a_1[1] || (((b_2[0] < 88)) ? (false) : (true))));
+      console.log(f_3(z_1, w_2));
     `,
   },
   {

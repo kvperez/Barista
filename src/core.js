@@ -107,8 +107,8 @@ export function ifStatement(test, consequent, alternate) {
   return { kind: "IfStatement", test, consequent, alternate }
 }
 
-export function elseIfStatement(test, consequent) {
-  return { kind: "elseIfStatement", test, consequent }
+export function shortIfStatement(test, consequent) {
+  return { kind: "shortIfStatement", test, consequent }
 }
 
 export function whileStatement(test, body) {

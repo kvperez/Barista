@@ -2,7 +2,9 @@ order Car {
     roast: name
     pump: year
 
-    item carMaker(x: pump, y: roast) -> none {
-        remake "Car"
+    item carMaker() -> none {
+        name = "car"
+        year = 2024
+        remake name
     }
 }

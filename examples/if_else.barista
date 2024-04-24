@@ -1,0 +1,10 @@
+item age() -> none {
+  let minAge = 25
+  let myAge = 21
+  brew minAge > myAge {
+    remake "You are too young, try again!"
+  }
+  pull {
+    remake "You are of age"
+  }
+}
