@@ -138,6 +138,21 @@ const fixtures = [
       }
     `,
   },
+  {
+    name: "call function",
+    source: `
+      item f(x: pump) -> pump {
+        serve x
+      }
+      remake f(1)
+    `,
+    expected: dedent`
+      function f_1(x_2) {
+        return x_2;
+      }
+      console.log(f_1(1));
+    `,
+  },
 ]
 
 describe("The code generator", () => {

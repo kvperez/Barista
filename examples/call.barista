@@ -1,4 +1,2 @@
-
-
-item f(x: pump) -> none {}
-f(1,2)
+item f(x: pump) -> pump {serve x}
+f(1)

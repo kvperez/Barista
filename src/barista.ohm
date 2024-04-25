@@ -17,7 +17,7 @@ Barista {
 
     FuncDecl = item id Params "->" Type Block
     ClassDecl = order id "{" Field* FuncDecl* "}"
-    Field = id ":" Type
+    Field = Type ":" id
     VarDecl = (let | const) id "=" Exp
 
     Params = "(" ListOf<Param, ","> ")"
@@ -55,7 +55,6 @@ Barista {
             | ( "-" | not) Primary       	           -- unary
     Primary = Primary ("(" | "?(") ListOf<Exp, ","> ")" ~mut     -- call
             | Primary ("[" | "?[") Exp "]"                       -- subscript
-            | Primary ("." | "?.") id                            -- member
             | Type_array "(" ")" ~mut                            -- emptyarray
             | "[" NonemptyListOf<Exp, ","> "]" ~mut              -- arrayexp
             | "(" Exp ")" ~mut                                   -- parens

@@ -91,6 +91,9 @@ export default function generate(program) {
         e.alternate
       )}))`
     },
+    UnaryExpression(e) {
+      return `${e.op}(${gen(e.operand)})`
+    },
     BinaryExpression(e) {
       const op = { "==": "===", "!=": "!==" }[e.op] ?? e.op
       return `(${gen(e.left)} ${op} ${gen(e.right)})`

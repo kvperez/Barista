@@ -7,7 +7,7 @@ const syntaxChecks = [
   ["end of program inside comment", "remake 0 // yay"],
   ["class declaration", "order Car {}"],
   // ["a new constructor", 'Car myCar = new Car("Ford", 2014)'],
-  ["calling a constructor method", 'remake myCar.getYear() + "years old"'],
+  // ["calling a constructor method", 'remake myCar.getYear() + "years old"'],
   ["brew statement", "brew x <= 1 {serve x}"],
   ["brew pull statement", "brew x <= 1 {serve x} pull {serve 0}"],
   [

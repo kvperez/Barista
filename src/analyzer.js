@@ -206,6 +206,14 @@ export default function analyze(match) {
     must(argCount === paramCount, message, at)
   }
 
+  // function mustHaveAField(field, at) {
+  //   must(
+  //     !context.lookup(field),
+  //     `Expected a ${field} to be declared, how will you use your mastrena?`,
+  //     at
+  //   )
+  // }
+
   const analyzer = match.matcher.grammar.createSemantics().addOperation("rep", {
     Program(statements) {
       return core.program(statements.children.map((s) => s.rep()))
@@ -231,6 +239,19 @@ export default function analyze(match) {
       return core.functionDeclaration(fun, params, body)
     },
     ClassDecl(_order, id, _open, field, fundecl, _close) {},
+    // ClassDecl(_order, id, _open, field, fundecl, _close) {
+    //   const conField = field.rep()
+    //   mustHaveAField(conField, { at: field })
+    //   const type = core.classType(id.sourceString, [], [])
+    //   context.add(id.sourceString, type)
+    //   context = context.newChildContext({ inClass: true })
+    //   const fields = field.children.map((fielddecl) => fielddecl.rep())
+    //   const methods = fundecl.children.map((fundecls) => fundecls.rep())
+    //   context = context.parent
+    //   type.fields = fields
+    //   type.methods = methods
+    //   return core.classDeclaration(id.sourceString, type)
+    // },
     VarDecl(modifier, id, _eq, exp) {
       const initializer = exp.rep()
       const readOnly = modifier.sourceString === "const"
@@ -243,7 +264,7 @@ export default function analyze(match) {
       context.add(id.sourceString, variable)
       return core.variableDeclaration(variable, initializer)
     },
-    Field(id, _colon, type) {
+    Field(type, _colon, id) {
       return core.field(id.sourceString, type.rep())
     },
     Params(_open, paramList, _close) {
@@ -434,20 +455,6 @@ export default function analyze(match) {
       mustHaveAnArrayType(array, { at: exp1 })
       mustHaveIntegerType(subscript, { at: exp2 })
       return core.subscript(array, subscript)
-    },
-    Primary_member(exp, dot, id) {
-      const object = exp.rep()
-      let structType
-      if (dot.sourceString === "?.") {
-        mustHaveAnOptionalStructType(object, { at: exp })
-        structType = object.type.baseType
-      } else {
-        mustHaveAStructType(object, { at: exp })
-        structType = object.type
-      }
-      mustHaveMember(structType, id.sourceString, { at: id })
-      const field = structType.fields.find((f) => f.name === id.sourceString)
-      return core.memberExpression(object, dot.sourceString, field)
     },
     Primary_emptyarray(ty, _open, _close) {
       const type = ty.rep()
