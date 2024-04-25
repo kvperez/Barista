@@ -85,17 +85,13 @@ export function emptyArray(type) {
   return { kind: "EmptyArray", type }
 }
 
-export function memberExpression(object, op, field) {
-  return { kind: "MemberExpression", object, op, field, type: field.type }
-}
-
 export function call(callee, args) {
   return { kind: "Call", callee, args, type: callee.type.returnType }
 }
 
-export function constructorCall(callee, args) {
-  return { kind: "ConstructorCall", callee, args, type: callee }
-}
+// export function constructorCall(callee, args) {
+//   return { kind: "ConstructorCall", callee, args, type: callee }
+// }
 
 export const breakStatement = { kind: "BreakStatement" }
 

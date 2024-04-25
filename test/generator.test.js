@@ -153,6 +153,17 @@ const fixtures = [
       console.log(f_1(1));
     `,
   },
+  {
+    name: "arrays",
+    source: `
+      let a = [true, false, true]
+      remake a[1]
+    `,
+    expected: dedent`
+      let a_1 = [true, false, true];
+      console.log(a_1[1]);
+    `,
+  },
 ]
 
 describe("The code generator", () => {
