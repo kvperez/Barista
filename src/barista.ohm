@@ -16,7 +16,8 @@ Barista {
                | ReturnStmt
 
     FuncDecl = item id Params "->" Type Block
-    ClassDecl = order id "{" Field* FuncDecl* "}"
+    ClassDecl = order id "{" Field* MethodDecl* "}"
+    MethodDecl = item id Params "->" Type Block
     Field = id ":" Type
     VarDecl = (let | const) id "=" Exp
 

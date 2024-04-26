@@ -26,6 +26,14 @@ export function classDeclaration(name, type) {
   return { kind: "ClassDeclaration", name, type }
 }
 
+export function method(name, type) {
+  return { kind: "Method", name, type }
+}
+
+export function methodDeclaration(method, params, body) {
+  return { kind: "MethodDeclaration", method, params, body }
+}
+
 export function classType(name, fields, methods) {
   return { kind: "ClassType", name, fields, methods }
 }

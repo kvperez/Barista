@@ -246,6 +246,19 @@ export default function analyze(match) {
       context = context.parent
       return core.classDeclaration(id.sourceString, type)
     },
+    MethodDecl(_item, id, parameters, _arrow, type, block) {
+      const method = core.method(id.sourceString)
+      mustNotAlreadyBeDeclared(id.sourceString, { at: id })
+      context.add(id.sourceString, method)
+      context = context.newChildContext({ inLoop: false, function: method })
+      const params = parameters.rep()
+      const paramTypes = params.map((param) => param.type)
+      const returnType = type.children?.[0]?.rep() ?? NONE
+      method.type = core.functionType(paramTypes, returnType)
+      const body = block.rep()
+      context = context.parent
+      return core.methodDeclaration(method, params, body)
+    },
     VarDecl(modifier, id, _eq, exp) {
       const initializer = exp.rep()
       const readOnly = modifier.sourceString === "const"

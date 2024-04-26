@@ -49,6 +49,11 @@ export default function generate(program) {
       }
       output.push("}")
     },
+    MethodDeclaration(d) {
+      output.push(`${gen(d.method)}(${d.params.map(gen).join(", ")}) {`)
+      d.body.forEach(gen)
+      output.push("}")
+    },
     ClassType(c) {
       return targetName(c)
     },
@@ -57,6 +62,9 @@ export default function generate(program) {
     },
     Function(f) {
       return targetName(f)
+    },
+    Method(m) {
+      return targetName(m)
     },
     Increment(s) {
       output.push(`${gen(s.variable)}++;`)
