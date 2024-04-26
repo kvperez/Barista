@@ -122,12 +122,7 @@ export default function analyze(match) {
         equivalent(t1.baseType, t2.baseType)) ||
       (t1?.kind === "ArrayType" &&
         t2?.kind === "ArrayType" &&
-        equivalent(t1.baseType, t2.baseType)) ||
-      (t1?.kind === "FunctionType" &&
-        t2?.kind === "FunctionType" &&
-        equivalent(t1.returnType, t2.returnType) &&
-        t1.paramTypes.length === t2.paramTypes.length &&
-        t1.paramTypes.every((t, i) => equivalent(t, t2.paramTypes[i])))
+        equivalent(t1.baseType, t2.baseType))
     )
   }
 

@@ -44,7 +44,7 @@ const semanticChecks = [
   ],
   ["function return types", `item square(x: pump) -> pump { serve x * x }`],
   ["array parameters", "item f(x: [pump?]) -> none {}"],
-  ["optional parameters", "item f(x: [pump], y: [pump?]) -> none {}"],
+  ["optional parameters", "item f(x: [pump], y: pump?) -> none {}"],
   ["outer variable", "let x=1 blend false {remake 1}"],
   [
     "class declaration",
@@ -62,8 +62,8 @@ const semanticErrors = [
   ],
   [
     "none in fn type",
-    "item f(g: none) -> none {serve g}",
-    /Cannot serve a value/,
+    "item f(g: none) -> none? {let a = [2,3,5.0] serve g}",
+    /Cannot assign a none/,
   ],
   ["non-int increment", "let x=false x++", /Expected a pump/],
   ["non-int decrement", "let x=false x--", /Expected a pump/],
