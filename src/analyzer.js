@@ -206,13 +206,10 @@ export default function analyze(match) {
     must(argCount === paramCount, message, at)
   }
 
-  // function mustHaveAField(field, at) {
-  //   must(
-  //     !context.lookup(field),
-  //     `Expected a ${field} to be declared, how will you use your mastrena?`,
-  //     at
-  //   )
-  // }
+  function mustHaveDistinctFields(type, at) {
+    const fieldNames = new Set(type.fields.map((f) => f.name))
+    must(fieldNames.size === type.fields.length, "Fields must be distinct", at)
+  }
 
   const analyzer = match.matcher.grammar.createSemantics().addOperation("rep", {
     Program(statements) {
@@ -238,20 +235,19 @@ export default function analyze(match) {
       context = context.parent
       return core.functionDeclaration(fun, params, body)
     },
-    ClassDecl(_order, id, _open, field, fundecl, _close) {},
-    // ClassDecl(_order, id, _open, field, fundecl, _close) {
-    //   const conField = field.rep()
-    //   mustHaveAField(conField, { at: field })
-    //   const type = core.classType(id.sourceString, [], [])
-    //   context.add(id.sourceString, type)
-    //   context = context.newChildContext({ inClass: true })
-    //   const fields = field.children.map((fielddecl) => fielddecl.rep())
-    //   const methods = fundecl.children.map((fundecls) => fundecls.rep())
-    //   context = context.parent
-    //   type.fields = fields
-    //   type.methods = methods
-    //   return core.classDeclaration(id.sourceString, type)
-    // },
+    ClassDecl(_order, id, _open, field, fundecl, _close) {
+      mustNotAlreadyBeDeclared(id.sourceString, { at: id })
+      const type = core.classType(id.sourceString, [], [])
+      context.add(id.sourceString, type)
+      context = context.newChildContext({ inClass: true })
+      const fields = field.children.map((fielddecl) => fielddecl.rep())
+      const methods = fundecl.children.map((fundecls) => fundecls.rep())
+      mustHaveDistinctFields(type, { at: id })
+      context = context.parent
+      type.fields = fields
+      type.methods = methods
+      return core.classDeclaration(id.sourceString, type)
+    },
     VarDecl(modifier, id, _eq, exp) {
       const initializer = exp.rep()
       const readOnly = modifier.sourceString === "const"
@@ -264,7 +260,7 @@ export default function analyze(match) {
       context.add(id.sourceString, variable)
       return core.variableDeclaration(variable, initializer)
     },
-    Field(type, _colon, id) {
+    Field(id, _colon, type) {
       return core.field(id.sourceString, type.rep())
     },
     Params(_open, paramList, _close) {

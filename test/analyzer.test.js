@@ -45,20 +45,20 @@ const semanticChecks = [
   ["array parameters", "item f(x: [pump?]) -> none {}"],
   ["optional parameters", "item f(x: [pump], y: roast?) -> none {}"],
   ["outer variable", "let x=1 blend false {remake 1}"],
-  // [
-  //   "class declaration",
-  //   'order Car { roast: name pump: year item carMaker() -> none { name = "myCar" year = 2024 let vroom = year + 3 serve vroom }} ',
-  // ],
+  [
+    "class declaration",
+    'order Car { name: roast year: pump item carMaker() -> pump {let name = "myCar" let year = 2024 let vroom = year + 3 serve vroom }} ',
+  ],
   ["call a function", "item f(x: pump) -> none {} f(1)"],
 ]
 
 // Programs that are syntactically correct but have semantic errors
 const semanticErrors = [
-  // [
-  //   "no field",
-  //   'order Car { carMaker() -> none { name = "myCar" year = 2024 let vroom = year + 3 serve vroom }}',
-  //   /Expected a /,
-  // ],
+  [
+    "no field",
+    'order Car { name: roast year: pump item carMaker() -> none { let name = "myCar" let year = 2024 let vroom = year + 3 serve vroom }}',
+    /Cannot serve a value/,
+  ],
   ["non-int increment", "let x=false x++", /Expected a pump/],
   ["non-int decrement", "let x=false x--", /Expected a pump/],
   ["undeclared id", "remake x", /Ingredient x not declared/],

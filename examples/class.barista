@@ -1,10 +1,9 @@
 order Car { 
-    roast: name 
-    pump: year
+    name: roast 
+    year: pump
     
     item carMaker() -> pump { 
-        name = "myCar" 
-        year = 2024 
+        let year = 2024 
         let vroom = year + 3 
         serve vroom 
     }

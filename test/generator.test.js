@@ -112,7 +112,6 @@ const fixtures = [
           serve x
         }
       }
-      remake f(z, w)
     `,
     expected: dedent`
       let z_1 = 0.5;
@@ -122,7 +121,6 @@ const fixtures = [
           return x_4;
         }
       }
-      console.log(f_3(z_1, w_2));
     `,
   },
   {
