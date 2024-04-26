@@ -3,7 +3,6 @@ import * as core from "./core.js"
 const PUMP = core.pumpType
 const ROAST = core.roastType
 const BOOLEAN = core.boolType
-const ANY = core.anyType
 const NONE = core.noneType
 
 class Context {
@@ -133,17 +132,7 @@ export default function analyze(match) {
   }
 
   function assignable(fromType, toType) {
-    return (
-      toType == ANY ||
-      equivalent(fromType, toType) ||
-      (fromType?.kind === "FunctionType" &&
-        toType?.kind === "FunctionType" &&
-        assignable(fromType.returnType, toType.returnType) &&
-        fromType.paramTypes.length === toType.paramTypes.length &&
-        toType.paramTypes.every((t, i) =>
-          assignable(t, fromType.paramTypes[i])
-        ))
-    )
+    return equivalent(fromType, toType)
   }
 
   function typeDescription(type) {
@@ -156,12 +145,6 @@ export default function analyze(match) {
         return "boolean"
       case "NoneType":
         return "none"
-      case "AnyType":
-        return "any"
-      case "FunctionType":
-        const paramTypes = type.paramTypes.map(typeDescription).join(", ")
-        const returnType = typeDescription(type.returnType)
-        return `(${paramTypes})->${returnType}`
       case "ArrayType":
         return `[${typeDescription(type.baseType)}]`
       case "OptionalType":

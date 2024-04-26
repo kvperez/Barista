@@ -46,7 +46,6 @@ export const boolType = { kind: "BoolType" }
 export const pumpType = { kind: "PumpType" }
 export const roastType = { kind: "RoastType" }
 export const noneType = { kind: "NoneType" }
-export const anyType = { kind: "AnyType" }
 
 export function functionType(paramTypes, returnType) {
   return { kind: "FunctionType", paramTypes, returnType }
@@ -140,7 +139,6 @@ export const standardLibrary = Object.freeze({
   boolean: boolType,
   roast: roastType,
   none: noneType,
-  any: anyType,
 })
 
 String.prototype.type = roastType

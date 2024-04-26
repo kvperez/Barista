@@ -6,7 +6,8 @@ import analyze from "../src/analyzer.js"
 const semanticChecks = [
   ["variable declarations", 'const x = 1 let y = "false"'],
   ["variable assignments", "let x = 2  x = 10"],
-  ["print statement", 'item f() -> roast {remake "Hello World!"}'],
+  ["print statement", 'item f() -> roast {serve "Hello World!"}'],
+  ["adding two numbers with parentheses", "item f() -> pump {serve (2+2)}"],
   ["increment and decrement", "let x = 10 x-- x++"],
   ["initialize with empty array", "let a = [pump]()"],
   ["assign arrays", "let a = [1]"],
@@ -43,7 +44,7 @@ const semanticChecks = [
   ],
   ["function return types", `item square(x: pump) -> pump { serve x * x }`],
   ["array parameters", "item f(x: [pump?]) -> none {}"],
-  ["optional parameters", "item f(x: [pump], y: roast?) -> none {}"],
+  ["optional parameters", "item f(x: [pump], y: [pump?]) -> none {}"],
   ["outer variable", "let x=1 blend false {remake 1}"],
   [
     "class declaration",
@@ -57,6 +58,11 @@ const semanticErrors = [
   [
     "no field",
     'order Car { name: roast year: pump item carMaker() -> none { let name = "myCar" let year = 2024 let vroom = year + 3 serve vroom }}',
+    /Cannot serve a value/,
+  ],
+  [
+    "none in fn type",
+    "item f(g: none) -> none {serve g}",
     /Cannot serve a value/,
   ],
   ["non-int increment", "let x=false x++", /Expected a pump/],
