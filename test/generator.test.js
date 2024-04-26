@@ -154,11 +154,11 @@ const fixtures = [
   {
     name: "arrays",
     source: `
-      let a = [true, false, true]
+      let a = [true,false,true]
       remake a[1]
     `,
     expected: dedent`
-      let a_1 = [true, false, true];
+      let a_1 = [true,false,true];
       console.log(a_1[1]);
     `,
   },
