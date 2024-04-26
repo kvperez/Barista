@@ -180,8 +180,8 @@ const fixtures = [
         this["y_2"] = y_2;
       }
       z_3() {
-        let y_2 = "Hi"
-        console.log(this["y_2"])
+        let y_4 = "Hi";
+        console.log(y_4);
       }
     }
     `,
