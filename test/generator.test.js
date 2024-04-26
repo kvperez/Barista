@@ -166,7 +166,7 @@ const fixtures = [
     name: "class",
     source: `
     order x { 
-    y: roast 
+      y: roast 
     
       item z() -> none {
         let y = "Hi"
@@ -179,7 +179,7 @@ const fixtures = [
       constructor(y_2) {
         this["y_2"] = y_2;
       }
-      z_4() {
+      z_3() {
         let y_2 = "Hi"
         console.log(this["y_2"])
       }
