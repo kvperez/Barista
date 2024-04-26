@@ -93,7 +93,7 @@ export default function generate(program) {
         output.push("}")
       }
     },
-    shortIfStatement(s) {
+    ShortIfStatement(s) {
       output.push(`if (${gen(s.test)}) {`)
       s.consequent.forEach(gen)
       output.push("}")

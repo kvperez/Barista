@@ -112,7 +112,7 @@ export function ifStatement(test, consequent, alternate) {
 }
 
 export function shortIfStatement(test, consequent) {
-  return { kind: "shortIfStatement", test, consequent }
+  return { kind: "ShortIfStatement", test, consequent }
 }
 
 export function whileStatement(test, body) {
