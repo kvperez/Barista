@@ -49,6 +49,9 @@ export default function generate(program) {
       }
       output.push("}")
     },
+    ClassType(c) {
+      return targetName(c)
+    },
     Variable(v) {
       return targetName(v)
     },

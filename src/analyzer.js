@@ -240,8 +240,8 @@ export default function analyze(match) {
       const type = core.classType(id.sourceString, [], [])
       context.add(id.sourceString, type)
       context = context.newChildContext({ inClass: true })
-      const fields = field.children.map((fielddecl) => fielddecl.rep())
-      const methods = fundecl.children.map((fundecls) => fundecls.rep())
+      type.fields = field.children.map((fielddecl) => fielddecl.rep())
+      type.methods = fundecl.children.map((fundecls) => fundecls.rep())
       mustHaveDistinctFields(type, { at: id })
       context = context.parent
       return core.classDeclaration(id.sourceString, type)

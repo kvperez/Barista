@@ -1,12 +1,8 @@
-#! /usr/bin/env node
-
 import * as fs from "node:fs/promises"
-import process from "process"
+import stringify from "graph-stringify"
 import compile from "./compiler.js"
-// import { Program } from "./core.js"
-// import stringify from "graph-stringify"
 
-const help = `barista compiler
+const help = `Barista compiler
 
 Syntax: barista <filename> <outputType>
 
@@ -22,7 +18,7 @@ async function compileFromFile(filename, outputType) {
   try {
     const buffer = await fs.readFile(filename)
     const compiled = compile(buffer.toString(), outputType)
-    console.log(compiled)
+    console.log(stringify(compiled, "kind") || compiled)
   } catch (e) {
     console.error(`\u001b[31m${e}\u001b[39m`)
     process.exitCode = 1
