@@ -132,9 +132,9 @@ export default function generate(program) {
     EmptyArray(e) {
       return "[]"
     },
-    // ConstructorCall(c) {
-    //   return `new ${gen(c.callee)}(${c.args.map(gen).join(", ")})`
-    // },
+    Call(e) {
+      return `${gen(e.callee)}(${e.args.map(gen).join(",")})`
+    },
   }
 
   gen(program)
