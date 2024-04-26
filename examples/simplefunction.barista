@@ -1,0 +1,3 @@
+item add(x: pump, y: pump) -> pump {
+    remake x + y
+}

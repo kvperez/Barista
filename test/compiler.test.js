@@ -1,6 +1,5 @@
 import assert from "node:assert/strict"
 import compile from "../src/compiler.js"
-// import { Program } from "../src/core.js"
 
 const sampleProgram = "item add(x: pump, y: pump) -> pump {remake x + y}"
 
@@ -23,17 +22,17 @@ describe("The compiler", () => {
   })
   it("accepts the analyzed option", (done) => {
     const compiled = compile(sampleProgram, "analyzed")
-    assert(compiled instanceof Program)
+    assert(compiled.kind === "Program")
     done()
   })
   it("accepts the optimized option", (done) => {
     const compiled = compile(sampleProgram, "optimized")
-    assert(compiled instanceof Program)
+    assert(compiled.kind === "Program")
     done()
   })
   it("generates js code when given the js option", (done) => {
     const compiled = compile(sampleProgram, "js")
-    assert(compiled.startsWith("console.log(0)"))
+    assert(compiled.startsWith("function add_1(x_2, y_3)"))
     done()
   })
 })
