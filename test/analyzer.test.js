@@ -61,6 +61,11 @@ const semanticErrors = [
     /Cannot serve a value/,
   ],
   [
+    "different operand types",
+    'remake true ? "hi" : 5',
+    /Operands do not have the same type/,
+  ],
+  [
     "none in fn type",
     "item f(g: none) -> none? {let a = [2,3,5.0] serve g}",
     /Cannot assign a none/,
