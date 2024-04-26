@@ -244,8 +244,6 @@ export default function analyze(match) {
       const methods = fundecl.children.map((fundecls) => fundecls.rep())
       mustHaveDistinctFields(type, { at: id })
       context = context.parent
-      type.fields = fields
-      type.methods = methods
       return core.classDeclaration(id.sourceString, type)
     },
     VarDecl(modifier, id, _eq, exp) {

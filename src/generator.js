@@ -37,7 +37,18 @@ export default function generate(program) {
       d.body.forEach(gen)
       output.push("}")
     },
-    ClassDeclaration(c) {},
+    ClassDeclaration(c) {
+      output.push(`class ${gen(c.type)} {`)
+      output.push(`constructor(${c.type.fields.map(gen).join(",")}) {`)
+      for (let field of c.type.fields) {
+        output.push(`this[${JSON.stringify(gen(field))}] = ${gen(field)};`)
+      }
+      output.push("}")
+      for (let method of c.type.methods) {
+        gen(method)
+      }
+      output.push("}")
+    },
     Variable(v) {
       return targetName(v)
     },

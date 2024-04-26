@@ -19,7 +19,6 @@ const optimizers = {
     if (d.body) d.body = d.body.flatMap(optimize)
     return d
   },
-  ClassDeclaration(c) {},
   Increment(s) {
     s.variable = optimize(s.variable)
     return s

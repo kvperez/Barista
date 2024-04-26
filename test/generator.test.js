@@ -162,6 +162,30 @@ const fixtures = [
       console.log(a_1[1]);
     `,
   },
+  {
+    name: "class",
+    source: `
+    order x { 
+    y: roast 
+    
+      item z() -> none {
+        let y = "Hi"
+        remake y
+      }
+    }
+    `,
+    expected: dedent`
+    class x_1 {
+      constructor(y_2) {
+        this["y_2"] = y_2;
+      }
+      z_4() {
+        let y_2 = "Hi"
+        console.log(this["y_2"])
+      }
+    }
+    `,
+  },
 ]
 
 describe("The code generator", () => {
