@@ -1,5 +1,8 @@
-item returnNegativeOne(x: [pump]) -> pump {
-    ristretto y espresso x {
-        serve -1
+item array(x: [pump]) -> pump {
+  x = [2,3,5]
+  ristretto i espresso x {
+    brew i == 1 {
+      serve x[i]
     }
+  }
 }

@@ -396,3 +396,7 @@ a:active {
   background-color: #e6e6e6;
   border-color: #e6e6e6;
 }
+
+.pre-scrollable {
+  overflow: hidden;
+}

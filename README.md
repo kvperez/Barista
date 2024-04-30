@@ -24,14 +24,14 @@ By: Kevin Perez
 <td>
 
 ```
-remake “Hello World!”
+remake “Hello Baristas!”
 ```
 
 </td>
 <td>
 
 ```javascript
-console.log(“Hello World!”)
+console.log(“Hello Baristas!”)
 ```
 
 </td>
@@ -46,13 +46,13 @@ console.log(“Hello World!”)
 
 ```
 order Car {
-  hopper (name: roast, year: pump) {
-    shot.name = name
-    shot.year = year
-  }
+  name: roast
+  year: pump
 
-  item getYear() -> pump {
-    shot.year
+  item carMaker() -> pump {
+    let year = 2024
+    let vroom = year + 3
+    serve vroom
   }
 }
 ```
@@ -66,8 +66,10 @@ class Car {
     this.name = name
     this.year = year
   }
-  getYear() {
-    return this.year
+  carMaker() {
+    this.year = 2024
+    let vroom = this.year + 3
+    return vroom
   }
 }
 ```
@@ -83,9 +85,12 @@ class Car {
 <td>
 
 ```
-item returnNegativeOne(x: array) -> pump {
-  ristretto y espresso x {
-    serve -1
+item array() -> pump {
+  let x = [2,3,5]
+  ristretto i espresso x {
+    brew i == 1 {
+      serve x[i]
+    }
   }
 }
 ```
@@ -94,9 +99,12 @@ item returnNegativeOne(x: array) -> pump {
 <td>
 
 ```javascript
-function returnNegativeOne(x) {
-  for (let i = 0; i < x; i++) {
-    return -1
+function array() {
+  let x = [2, 3, 5]
+  for (let i = 0; i < x.length; i++) {
+    if (i === 1) {
+      return x[i]
+    }
   }
 }
 ```
@@ -112,14 +120,12 @@ function returnNegativeOne(x) {
 <td>
 
 ```
-item while() -> none {
-  let x = 0
-  let y = 1
-
-  blend x < y {
-    remake "Less Than"
-    x++
+item counter() -> pump {
+  let count = 0
+  blend count < 5 {
+    count++
   }
+  serve count
 }
 ```
 
@@ -127,19 +133,19 @@ item while() -> none {
 <td>
 
 ```javascript
-function whileBreak() {
-  let x = 0
-  let y = 1
-  while (x < y) {
-    console.log("Less Than")
+function counter() {
+  let count = 0
+  while (count < 5) {
+    count++
   }
+  return count
 }
 ```
 
 </td>
 </table>
 
-### Fibonacci
+### Function
 
 <table>
 <tr> <th>Barista</th><th>JavaScript</th><tr>
@@ -147,13 +153,10 @@ function whileBreak() {
 <td>
 
 ```
-item fibonacci(x: pump) -> pump {
-  brew x <= 1 {
-    serve x
-  }
-  pull {
-    serve fibonacci(x - 1) + fibonacci(x - 2)
-  }
+item carGen(name: roast, car: pump) -> pump {
+  let vroom = car + 3
+  name = "MyCar"
+  serve vroom
 }
 ```
 
@@ -161,12 +164,10 @@ item fibonacci(x: pump) -> pump {
 <td>
 
 ```javascript
-function fibonacci(x) {
-  if (x <= 1) {
-    return x
-  } else {
-    return fibonacci(x - 1) + fibonacci(x - 2)
-  }
+function carGen(name, car) {
+  let vroom = car + 3
+  name = "MyCar"
+  return vroom
 }
 ```
 

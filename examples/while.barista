@@ -1,0 +1,7 @@
+item counter() -> pump {
+  let count = 0
+  blend count < 5 {
+    count++
+  }
+  serve count
+}

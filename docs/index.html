@@ -150,11 +150,13 @@
         <hr class="star-light mb-5" />
         <div class="row">
           <div class="col-sm-12 col-lg-6">
-            <h3 class="text-center text-uppercase text-white">Hello World</h3>
+            <h3 class="text-center text-uppercase text-white">
+              Hello Baristas
+            </h3>
             <div class="row">
               <div class="col-sm-12">
-                <pre><code class="text-white">
-remake “Hello World!”
+                <pre><code class="text-white pre-scrollable">
+                  remake “Hello Baristas!”
                 </code></pre>
               </div>
             </div>
@@ -163,16 +165,17 @@ remake “Hello World!”
             <h3 class="text-center text-uppercase text-white">Classes</h3>
             <div class="row">
               <div class="col-sm-12">
-                <pre><code class="text-white">
-            order Car {
-              hopper (name: roast, year: pump) {
-                shot.name = name
-                shot.year = year
-              }
-              item getYear() -> pump {
-                serve shot.year
-              }
-            }
+                <pre><code class="text-white pre-scrollable">
+                order Car {
+                  name: roast
+                  year: pump
+
+                  item carMaker() -> pump {
+                    let year = 2024
+                    let vroom = year + 3
+                    serve vroom
+                  }
+                }
                 </code></pre>
               </div>
             </div>
@@ -180,16 +183,14 @@ remake “Hello World!”
         </div>
         <div class="row">
           <div class="col-sm-12 col-lg-6">
-            <h3 class="text-center text-uppercase text-white">Plus One</h3>
+            <h3 class="text-center text-uppercase text-white">Call Function</h3>
             <div class="row">
               <div class="col-sm-12">
-                <pre><code class="text-white">
-          item plusOne() -> none {
-            const numbers = [1,2,3,4,5]
-            ristretto i espresso numbers {
-              numbers[i] += 1
-            }
-          }
+                <pre><code class="text-white pre-scrollable">
+                  item f(x: pump) -> pump {
+                    serve x
+                  }
+                  remake f(1)
                   </code></pre>
               </div>
             </div>
@@ -198,16 +199,14 @@ remake “Hello World!”
             <h3 class="text-center text-uppercase text-white">Increment X</h3>
             <div class="row">
               <div class="col-sm-12">
-                <pre><code class="text-white">
-item incrementX() -> none {
-  let x = 0
-  let y = 1
-
-  blend x < y {
-    remake "Less Than"
-    x++
-  }
-}
+                <pre><code class="text-white pre-scrollable">
+                  item counter() -> pump {
+                    let count = 0
+                    blend count < 5 {
+                      count++
+                    }
+                    serve count
+                  }
                   </code></pre>
               </div>
             </div>
@@ -218,19 +217,32 @@ item incrementX() -> none {
             <h3 class="text-center text-uppercase text-white">Add Two</h3>
             <div class="row">
               <div class="col-sm-12">
-                <pre><code class="text-white">
-              item addTwo(x: pump, y: pump) -> pump { brew x <= 1 { serve x }
-              pull { serve x + y } }
+                <pre><code class="text-white pre-scrollable">
+                  item addTwo(x: pump, y: pump) -> pump { 
+                    brew x <= 1 { 
+                      serve x 
+                    }
+                    pull { 
+                      serve x + y 
+                    } 
+                  }
                 </code></pre>
               </div>
             </div>
           </div>
           <div class="col-sm-12 col-lg-6">
-            <h3 class="text-center text-uppercase text-white">TODO</h3>
+            <h3 class="text-center text-uppercase text-white">For Loop</h3>
             <div class="row">
               <div class="col-sm-12">
-                <pre><code class="text-white">
-TODO
+                <pre><code class="text-white pre-scrollable">
+                  item array(x: [pump]) -> pump {
+                    x = [2,3,5]
+                    ristretto i espresso x {
+                      brew i == 1 {
+                        serve x[i]
+                      }
+                    }
+                  }
               </code></pre>
               </div>
             </div>
