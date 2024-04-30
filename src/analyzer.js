@@ -53,13 +53,17 @@ export default function analyze(match) {
   }
 
   function mustHaveNumericType(e, at) {
-    must(e.type === PUMP, "Expected a pump, I need it at the window now", at)
+    must(
+      e.type === PUMP,
+      "Expected a pump, hurry, I need it at the window now!",
+      at
+    )
   }
 
   function mustHaveNumericOrStringType(e, at) {
     must(
       [PUMP, ROAST].includes(e.type),
-      "Expected a pump or roast, I need it at the window now",
+      "Expected a pump or roast, hurry, I need it at the window now!",
       at
     )
   }
@@ -67,19 +71,23 @@ export default function analyze(match) {
   function mustHaveBooleanType(e, at) {
     must(
       e.type === BOOLEAN,
-      "Expected a boolean, I need it at the window now",
+      "Expected a boolean, hurry, I need it at the window now!",
       at
     )
   }
 
   function mustHaveIntegerType(e, at) {
-    must(e.type === PUMP, "Expected a pump, I need it at the window now", at)
+    must(
+      e.type === PUMP,
+      "Expected a pump, hurry, I need it at the window now!",
+      at
+    )
   }
 
   function mustHaveAnArrayType(e, at) {
     must(
       e.type?.kind === "ArrayType",
-      "Expected an array, I need it at the window now",
+      "Expected an array, hurry, I need it at the window now",
       at
     )
   }
@@ -97,7 +105,7 @@ export default function analyze(match) {
       expressions
         .slice(1)
         .every((e) => equivalent(e.type, expressions[0].type)),
-      "Not all elements have the same type",
+      "Not all elements have the same type, did you want a tall, grande, venti, trenta",
       at
     )
   }
@@ -105,7 +113,7 @@ export default function analyze(match) {
   function mustBeAType(e, at) {
     must(
       e?.kind.endsWith("Type"),
-      "Type expected, did you want a tall, grande, venti, or trenta",
+      "Type expected, did you want a pump, roast, boolean, etc.",
       at
     )
   }
@@ -172,7 +180,11 @@ export default function analyze(match) {
   }
 
   function mustReturnSomething(f, at) {
-    must(f.type.returnType !== NONE, "Cannot serve a value from this item", at)
+    must(
+      f.type.returnType !== NONE,
+      "Cannot serve a value from this item, make return type soemthing other than none",
+      at
+    )
   }
 
   function mustBeReturnable(e, { from: f }, at) {
