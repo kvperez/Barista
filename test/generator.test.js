@@ -40,6 +40,25 @@ const fixtures = [
     `,
   },
   {
+    name: "if not",
+    source: `
+      item f() -> none {
+        blend not false {
+          remake "This is a true statement"
+          tamp
+        }
+      }
+    `,
+    expected: dedent`
+      function f_1() {
+        while (!(false)) {
+          console.log("This is a true statement");
+          break;
+        }
+      }
+    `,
+  },
+  {
     name: "if",
     source: `
       let x = 0
@@ -184,6 +203,34 @@ const fixtures = [
         console.log(y_4);
       }
     }
+    `,
+  },
+  {
+    name: "conditional",
+    source: `
+      item f(x: pump) -> none {
+        remake true ? x : 5
+      }
+    `,
+    expected: dedent`
+      function f_1(x_2) {
+        console.log(((true) ? (x_2) : (5)));
+      }
+    `,
+  },
+  {
+    name: "arrays",
+    source: `
+      let a = [true, false, true]
+      let b = [10, 20, 30]  
+      const c = [pump]()
+      remake a[1] or b[0] < 88 ? false : true
+      `,
+    expected: dedent`
+      let a_1 = [true,false,true];
+      let b_2 = [10,20,30];
+      let c_3 = [];
+      console.log((a_1[1] || (((b_2[0] < 88)) ? (false) : (true))));
     `,
   },
 ]

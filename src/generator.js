@@ -1,5 +1,3 @@
-import { noneType } from "./core.js"
-
 export default function generate(program) {
   const output = []
 
@@ -114,14 +112,12 @@ export default function generate(program) {
       )}))`
     },
     UnaryExpression(e) {
-      return `${e.op}(${gen(e.operand)})`
+      const op = { not: "!" }[e.op] ?? e.op
+      return `${op}(${gen(e.operand)})`
     },
     BinaryExpression(e) {
-      const op = { "==": "===", "!=": "!==" }[e.op] ?? e.op
+      const op = { "==": "===", "!=": "!==", and: "&&", or: "||" }[e.op] ?? e.op
       return `(${gen(e.left)} ${op} ${gen(e.right)})`
-    },
-    EmptyOptional(e) {
-      return "undefined"
     },
     SubscriptExpression(e) {
       return `${gen(e.array)}[${gen(e.index)}]`
