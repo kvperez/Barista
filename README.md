@@ -174,15 +174,15 @@ function carGen(name, car) {
 </td>
 </table>
 
-### Types of Semantic Errors
+## Types of Semantic Errors
 
-- Non-initialized variables
+- Using non-initialized variables
 - Incrementing and decrementing with non-int variable types
-- Operands that do not have same type
-- Incorrect number of item (function) parameters
+- Operands that do not have same type are being compared
+- Serve (return) outside of an item (function)
+- Calling an item (function) that is not intialized
+- Incorrect number of item (function) parameters when item (function) is being called
 - None return type has a serve (return) value
-- Pump return type has a remake (print) value
+- Pump return type has a remake (print) value and no serve (return) value
 - Break outside of blend (loop)
-- Return outside of a item (function)
-- Function with return value doesn't return anything
-- Calling a function that is not intialized
+- Item (function) with serve (return) value that does not serve (return) anything
